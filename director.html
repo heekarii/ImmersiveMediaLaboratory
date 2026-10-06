@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Director · IMM Lab</title>
+<meta name="description" content="Seunghwa Jeong, Ph.D. — Assistant Professor, Dept. of Content Software, Sejong University. Director of the Immersive Media Lab.">
+<link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+.dir{display:grid;grid-template-columns:360px 1fr;gap:32px;align-items:start}
+.dir-card{background:#fff;border-radius:var(--radius);padding:32px;position:sticky;top:96px}
+.dir-card .avatar{width:96px;height:96px;font-size:34px;background:linear-gradient(135deg,var(--blue-deep),var(--blue) 50%,var(--cyan))}
+.dir-card h2{font-size:26px;font-weight:800;margin-top:20px;letter-spacing:-.03em}
+.dir-card .role{color:var(--sub);font-weight:600;margin-top:4px}
+.dir-card dl{margin-top:24px;display:grid;gap:14px;font-size:15px}
+.dir-card dt{color:var(--muted);font-size:13px;font-weight:600}
+.dir-card dd{font-weight:600;color:var(--text-2)}
+.block+.block{margin-top:56px}
+.block h3{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:16px;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.block h3 .more{font-size:15px}
+.career{position:relative;padding-left:28px}
+.career::before{content:"";position:absolute;left:7px;top:10px;bottom:10px;width:2px;background:var(--bg-3);border-radius:1px}
+.c-item{position:relative;padding:14px 0}
+.c-item::before{content:"";position:absolute;left:-28px;top:20px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 4px var(--bg-3);transition:box-shadow .3s}
+.c-item.now::before{box-shadow:inset 0 0 0 4px var(--blue)}
+.c-item:hover::before{box-shadow:inset 0 0 0 4px var(--blue)}
+.c-item .yr{font-size:14px;font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums}
+.c-item h4{font-size:18px;font-weight:800;margin-top:2px}
+.c-item p{color:var(--sub);font-size:15px}
+.proj-bars{background:#fff;border-radius:var(--radius);padding:24px 28px}
+.pb{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:12px 0;align-items:center;border-bottom:1px solid var(--line)}
+.pb:last-child{border-bottom:0}
+.pb .yr{font-weight:700;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.pb h4{font-size:15px;font-weight:700;line-height:1.45}
+@media (max-width:1020px){ .dir{grid-template-columns:1fr} .dir-card{position:static} }
+@media (max-width:600px){ .pb{grid-template-columns:1fr;gap:4px} .proj-bars{padding:12px 20px} }
+</style>
+</head>
+<body data-page="director">
+<main>
+  <section class="page-hero">
+    <div class="blob b1"></div><div class="blob b2"></div>
+    <div class="wrap">
+      <span class="eyebrow">Director</span>
+      <h1><span class="line"><span>Leading the lab,</span></span><span class="line"><span class="grad">from lab to industry.</span></span></h1>
+      <p class="lead">A decade in industry building immersive media platforms, now advancing them in academia.</p>
+    </div>
+  </section>
+
+  <section class="section gray" style="padding-top:80px">
+    <div class="wrap dir">
+      <aside class="dir-card reveal" id="card"></aside>
+      <div>
+        <div class="block reveal"><h3>Education</h3><div class="panel"><ul class="tl" id="edu"></ul></div></div>
+        <div class="block reveal"><h3>Work Experience</h3><div class="career" id="work"></div></div>
+        <div class="block reveal"><h3>Projects led as PI / Lead <a href="projects.html" class="more">All projects</a></h3><div class="proj-bars" id="led"></div></div>
+        <div class="block reveal"><h3>Selected Journal Papers <a href="publications.html" class="more">All publications</a></h3><div id="pubs"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-cta></section>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+const d = LAB.director;
+$("#card").innerHTML = `
+  <div class="avatar">${initials(d.name)}</div>
+  <h2>${esc(d.name)}</h2>
+  <div class="role">${esc(d.title)}<br>${esc(d.dept)}<br>Director, Immersive Media Lab</div>
+  <dl>
+    <div><dt>Office</dt><dd>${esc(d.office)}</dd></div>
+    <div><dt>Phone</dt><dd>${esc(d.tel)}</dd></div>
+    <div><dt>Email</dt><dd><button class="copy" data-copy="${d.email}"><span class="mail-text" data-mail="${d.email}"></span>${COPY_ICON}</button></dd></div>
+  </dl>`;
+$("#edu").innerHTML = LAB.education.map(e => `<li><span class="yr">${esc(e.y)}</span><div><h4>${esc(e.t)}</h4><p>${esc(e.s)}</p></div></li>`).join("");
+$("#work").innerHTML = LAB.experience.map(e => `<div class="c-item${/Present/.test(e.y)?" now":""}"><div class="yr">${esc(e.y)}</div><h4>${esc(e.t)}</h4><p>${esc(e.s)}</p></div>`).join("");
+$("#led").innerHTML = LAB.projects.filter(p => p.r).map(p => `
+  <a href="projects.html" class="pb"><span class="yr">${p.s===p.e?p.s:`${p.s} – ${p.e}`}</span>
+  <div><h4>${esc(p.t)}</h4><span class="badge" style="margin-top:6px">${p.r==="PI"?"Principal Investigator":"Project Lead"}</span><span class="badge gray">${esc(p.a)}</span></div></a>`).join("");
+$("#pubs").innerHTML = LAB.publications.filter(p => p.k === "j" && p.b && p.b.length > 1).map((p,i) => pubRow(p,"",i)).join("");
+</script>
+</body>
+</html>

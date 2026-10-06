@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Projects · IMM Lab</title>
+<meta name="description" content="Research projects of the Immersive Media Lab, Sejong University — from VR platforms to real-time 4D neural streaming.">
+<link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+.tools{display:flex;flex-direction:column;gap:16px;margin-top:64px}
+.tools .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.chips .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:1px}
+.chips button.on .dot{box-shadow:0 0 0 2px #fff}
+
+/* gantt */
+.gantt{margin-top:28px;background:var(--bg-2);border-radius:28px;padding:28px 28px 20px;position:relative}
+.g-axis,.g-row .lane{display:grid;grid-template-columns:repeat(var(--years),1fr);position:relative}
+.g-axis{font-size:12px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;padding-bottom:10px;border-bottom:1px solid var(--bg-3)}
+.g-axis span{text-align:left;white-space:nowrap}
+.g-body{position:relative}
+.g-grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(var(--years),1fr);pointer-events:none}
+.g-grid i{border-left:1px dashed rgba(139,149,161,.25)}
+.g-now{position:absolute;top:-6px;bottom:0;width:2px;background:var(--blue);border-radius:1px;pointer-events:none;z-index:2}
+.g-now b{position:absolute;top:-22px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:11px;padding:2px 7px;border-radius:6px;white-space:nowrap}
+.g-row{display:block;width:100%;text-align:left;padding:12px 0 10px;position:relative;border-radius:12px;transition:opacity .35s var(--ease)}
+.g-row .ttl{font-size:14px;font-weight:600;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;transition:color .2s}
+.g-row .lane{height:14px;margin-top:6px}
+.g-row .bar{height:14px;border-radius:7px;transform-origin:0 50%;transform:scaleX(0);transition:transform 1s var(--ease),filter .2s,height .2s,margin .2s;position:relative}
+.gantt.in .g-row .bar{transform:scaleX(1)}
+.g-row .bar .pi{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:#fff}
+.g-row:hover .ttl,.g-row:focus-visible .ttl{color:var(--blue)}
+.g-row:hover .bar{filter:brightness(1.1);height:18px;margin-top:-2px}
+.g-row.ghost{opacity:.18}
+.g-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:18px;font-size:12px;color:var(--muted);font-weight:600}
+.g-legend span{display:inline-flex;align-items:center;gap:6px}
+.g-legend i{display:inline-block;width:14px;height:8px;border-radius:4px}
+
+/* list */
+.p-group{margin-top:40px}
+.p-group h3{font-size:22px;font-weight:800;letter-spacing:-.02em;display:flex;gap:8px;align-items:baseline}
+.p-group h3 small{font-size:15px;color:var(--muted)}
+.p-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px}
+.p-card{background:var(--bg-2);border-radius:24px;padding:26px;text-align:left;display:flex;flex-direction:column;gap:10px;transition:transform .25s var(--ease),box-shadow .25s,background .2s;animation:fade .5s var(--ease) both;position:relative;overflow:hidden}
+.p-card:hover{transform:translateY(-4px);background:#fff;box-shadow:0 24px 48px -24px rgba(0,27,55,.25),inset 0 0 0 1px var(--line)}
+.p-card .yr{font-size:14px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.p-card h4{font-size:18px;font-weight:700;line-height:1.45;letter-spacing:-.02em}
+.p-card .stripe{position:absolute;left:0;top:0;bottom:0;width:5px}
+.p-card .meta{margin-top:auto;padding-top:6px}
+
+/* drawer */
+.drawer{position:fixed;inset:0;z-index:75;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .3s}
+.drawer.open{opacity:1;pointer-events:auto}
+.d-panel{position:absolute;top:0;right:0;bottom:0;width:min(480px,100%);background:#fff;padding:32px;overflow-y:auto;transform:translateX(100%);transition:transform .45s var(--ease);display:flex;flex-direction:column;gap:20px}
+.drawer.open .d-panel{transform:none}
+.d-close{align-self:flex-end;width:40px;height:40px;border-radius:12px;background:var(--bg-2);font-size:20px;line-height:1}
+.d-close:hover{background:var(--bg-3)}
+.d-panel h3{font-size:26px;font-weight:800;line-height:1.3;letter-spacing:-.03em}
+.d-kv{display:grid;gap:2px;background:var(--bg-2);border-radius:20px;padding:8px 20px}
+.d-kv div{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--bg-3);font-size:15px}
+.d-kv div:last-child{border-bottom:0}
+.d-kv dt{color:var(--muted);font-weight:600;flex:none}
+.d-kv dd{font-weight:700;text-align:right}
+.d-span{height:10px;border-radius:5px;background:var(--bg-3);position:relative;overflow:hidden}
+.d-span i{position:absolute;top:0;bottom:0;border-radius:5px}
+.d-span-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:700;margin-top:6px}
+
+@media (max-width:760px){
+  .gantt{padding:20px 16px 16px;border-radius:22px;margin-inline:-4px}
+  .g-axis span:nth-child(even){visibility:hidden}
+  .p-grid{grid-template-columns:1fr}
+  .d-panel{top:auto;left:0;width:100%;max-height:88vh;border-radius:24px 24px 0 0;transform:translateY(100%);padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+}
+</style>
+</head>
+<body data-page="projects">
+<main>
+  <section class="page-hero">
+    <div class="blob b1"></div><div class="blob b2"></div>
+    <div class="wrap">
+      <span class="eyebrow">Projects</span>
+      <h1><span class="line"><span>A decade of</span></span><span class="line"><span class="grad">immersive media.</span></span></h1>
+      <p class="lead">Government- and institute-funded research since 2014 — from multi-screen theaters and VR platforms to real-time 4D neural streaming.</p>
+    </div>
+  </section>
+
+  <section style="padding-bottom:120px">
+    <div class="wrap">
+      <div class="stats" style="margin-top:0">
+        <div class="stat reveal" data-d="1"><div class="num"><span data-count="0" id="sTotal">0</span></div><div class="lbl">Projects in total</div></div>
+        <div class="stat reveal" data-d="2"><div class="num"><span data-count="0" id="sOngoing">0</span></div><div class="lbl">Ongoing now</div></div>
+        <div class="stat reveal" data-d="3"><div class="num"><span data-count="0" id="sLed">0</span></div><div class="lbl">Led as PI or Project Lead</div></div>
+        <div class="stat reveal" data-d="4"><div class="num"><span data-count="0" id="sAg">0</span></div><div class="lbl">Funding agencies</div></div>
+      </div>
+
+      <div class="tools reveal">
+        <div class="row">
+          <div class="seg" id="viewSeg"><span class="thumb"></span><button class="on" data-v="timeline">Timeline</button><button data-v="list">List</button></div>
+          <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search projects"></label>
+        </div>
+        <div class="row">
+          <div class="chips" id="roleChips"></div>
+          <span class="count"><b id="count">16</b> projects</span>
+        </div>
+        <div class="chips" id="agChips"></div>
+      </div>
+
+      <div id="timeline"></div>
+      <div id="list" hidden></div>
+    </div>
+  </section>
+
+  <section data-cta style="padding-top:0"></section>
+</main>
+
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="d-panel" role="dialog" aria-modal="true" aria-labelledby="dTitle">
+    <button class="d-close" id="dClose" aria-label="Close">×</button>
+    <div id="dBody"></div>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+const P = LAB.projects.map((p,i) => ({...p, i}));
+const AG_COLOR = {KOCCA:"#3671ef", NRF:"#2625cd", ETRI:"#2bb3a6", IITP:"#70b7f7", NIA:"#e59cbf", NIPA:"#f2a14a", KOFIC:"#8b5cf6"};
+const now = new Date(), NOW = now.getFullYear() + now.getMonth()/12;
+const Y0 = Math.min(...P.map(p => p.s)), Y1 = Math.max(...P.map(p => p.e)) + 1, YEARS = Y1 - Y0;
+const ongoing = p => p.e + 1 > NOW && p.s <= NOW;
+const upcoming = p => p.s > NOW;
+const period = p => p.s === p.e ? `${p.s}` : `${p.s} – ${p.e}`;
+const roleName = r => r === "PI" ? "Principal Investigator" : r === "Lead" ? "Project Lead" : "Participant";
+
+/* stats */
+const agencies = [...new Set(P.map(p => p.a))];
+$("#sTotal").dataset.count = P.length;
+$("#sOngoing").dataset.count = P.filter(ongoing).length;
+$("#sLed").dataset.count = P.filter(p => p.r).length;
+$("#sAg").dataset.count = agencies.length;
+
+/* filters */
+const F = {view:"timeline", role:null, ag:null, q:""};
+const match = p => (!F.role || p.r === F.role) && (!F.ag || p.a === F.ag) &&
+  (!F.q || (p.t + " " + p.a + " " + (LAB.agencies[p.a]||"")).toLowerCase().includes(F.q));
+chips($("#roleChips"), [["PI","Principal Investigator"],["Lead","Project Lead"]], v => { F.role = v; render(); }, "All roles");
+chips($("#agChips"), agencies.sort((a,b) => P.filter(p=>p.a===b).length - P.filter(p=>p.a===a).length).map(a => [a, a]), v => { F.ag = v; render(); }, "All agencies");
+$$("#agChips button[data-v]").forEach(b => { if (b.dataset.v) b.insertAdjacentHTML("afterbegin", `<span class="dot" style="background:${AG_COLOR[b.dataset.v]}"></span>`); });
+seg($("#viewSeg"), b => { F.view = b.dataset.v; $("#timeline").hidden = F.view !== "timeline"; $("#list").hidden = F.view !== "list"; render(); });
+$("#q").addEventListener("input", e => { F.q = e.target.value.trim().toLowerCase(); render(); });
+
+/* timeline (gantt) — filtered-out rows fade instead of disappearing, so the shape stays readable */
+function buildTimeline(){
+  const pct = y => ((y - Y0) / YEARS * 100).toFixed(3) + "%";
+  $("#timeline").innerHTML = `
+    <div class="gantt reveal" id="gantt" style="--years:${YEARS}">
+      <div class="g-axis">${Array.from({length:YEARS}, (_,k) => `<span>${"'" + String(Y0+k).slice(2)}</span>`).join("")}</div>
+      <div class="g-body">
+        <div class="g-grid">${"<i></i>".repeat(YEARS)}</div>
+        ${NOW >= Y0 && NOW <= Y1 ? `<div class="g-now" style="left:${pct(NOW)}"><b>Now</b></div>` : ""}
+        ${P.map((p,k) => `
+          <button class="g-row" data-i="${p.i}" title="${esc(p.t)}">
+            <div class="ttl">${esc(p.t)}</div>
+            <div class="lane"><div class="bar" style="grid-column:${p.s-Y0+1} / ${p.e-Y0+2};background:${AG_COLOR[p.a]};transition-delay:${k*45}ms">${p.r?'<span class="pi"></span>':""}</div></div>
+          </button>`).join("")}
+      </div>
+      <div class="g-legend">${agencies.map(a => `<span><i style="background:${AG_COLOR[a]}"></i>${a}</span>`).join("")}<span><i style="background:#fff;width:8px;height:8px;border-radius:50%;box-shadow:0 0 0 2px var(--muted)"></i>Led by IMM Lab</span></div>
+    </div>`;
+  const g = $("#gantt");
+  new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting){ g.classList.add("in"); o.disconnect(); } }), {threshold:.1}).observe(g);
+}
+
+function render(){
+  const list = P.filter(match);
+  $("#count").textContent = list.length;
+  if (F.view === "timeline"){
+    $$(".g-row").forEach(r => r.classList.toggle("ghost", !list.some(p => p.i === +r.dataset.i)));
+  } else {
+    const groups = [["Ongoing", list.filter(p => ongoing(p) || upcoming(p))], ["Completed", list.filter(p => !ongoing(p) && !upcoming(p))]];
+    $("#list").innerHTML = list.length ? groups.filter(([,l]) => l.length).map(([name, l]) => `
+      <div class="p-group"><h3>${name} <small>${l.length}</small></h3>
+        <div class="p-grid">${l.map((p,k) => `
+          <button class="p-card" data-i="${p.i}" style="animation-delay:${Math.min(k,8)*40}ms">
+            <span class="stripe" style="background:${AG_COLOR[p.a]}"></span>
+            <span class="yr">${period(p)}</span>
+            <h4>${esc(p.t)}</h4>
+            <div class="meta">${p.r?`<span class="badge">${roleName(p.r)}</span>`:""}<span class="badge gray">${esc(p.a)}</span>${ongoing(p)?'<span class="badge green">Ongoing</span>':""}</div>
+          </button>`).join("")}</div></div>`).join("")
+      : `<div class="empty">No projects match these filters.</div>`;
+  }
+}
+
+/* detail drawer */
+const drawer = $("#drawer");
+function openDetail(i){
+  const p = P[i], dur = p.e - p.s + 1;
+  const status = ongoing(p) ? '<span class="badge green">Ongoing</span>' : upcoming(p) ? '<span class="badge">Upcoming</span>' : '<span class="badge gray">Completed</span>';
+  $("#dBody").innerHTML = `
+    <div>${status}<span class="badge gray">${esc(p.a)}</span></div>
+    <h3 id="dTitle" style="margin-top:12px">${esc(p.t)}</h3>
+    <div style="margin-top:20px">
+      <div class="d-span"><i style="left:${(p.s-Y0)/YEARS*100}%;width:${dur/YEARS*100}%;background:${AG_COLOR[p.a]}"></i></div>
+      <div class="d-span-lbl"><span>${Y0}</span><span>${Y1-1}</span></div>
+    </div>
+    <dl class="d-kv" style="margin-top:20px">
+      <div><dt>Period</dt><dd>${period(p)} · ${dur} yr${dur>1?"s":""}</dd></div>
+      <div><dt>Role</dt><dd>${roleName(p.r)}</dd></div>
+      <div><dt>Funding</dt><dd>${esc(p.a)}<br><span style="font-weight:500;color:var(--sub);font-size:13px">${esc(LAB.agencies[p.a]||"")}</span></dd></div>
+    </dl>
+    <div class="btn-row" style="margin-top:24px">
+      <button class="btn btn-ghost" data-nav="-1">← Previous</button><button class="btn btn-ghost" data-nav="1">Next →</button>
+    </div>`;
+  $$("[data-nav]", drawer).forEach(b => b.onclick = () => openDetail((i + +b.dataset.nav + P.length) % P.length));
+  drawer.classList.add("open"); drawer.setAttribute("aria-hidden","false");
+  $("#dClose").focus({preventScroll:true});
+}
+const closeDetail = () => { drawer.classList.remove("open"); drawer.setAttribute("aria-hidden","true"); };
+$("#dClose").onclick = closeDetail;
+drawer.addEventListener("click", e => { if (e.target === drawer) closeDetail(); });
+addEventListener("keydown", e => { if (e.key === "Escape") closeDetail(); });
+document.addEventListener("click", e => { const t = e.target.closest(".g-row,.p-card"); if (t) openDetail(+t.dataset.i); });
+
+buildTimeline(); render();
+</script>
+</body>
+</html>

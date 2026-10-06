@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Join Us · IMM Lab</title>
+<meta name="description" content="Open positions at the Immersive Media Lab, Sejong University: Ph.D./M.S. students and undergraduate researchers.">
+<link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+.join-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.jbox{background:rgba(255,255,255,.07);border-radius:20px;padding:24px}
+.jbox .t{font-size:13px;color:rgba(255,255,255,.55);font-weight:700}
+.jbox .v{font-size:18px;font-weight:700;margin-top:8px;line-height:1.5;word-break:break-all}
+.why{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.why div{background:var(--bg-2);border-radius:24px;padding:28px}
+.why b{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--blue-soft);color:var(--blue);font-size:18px;font-weight:800}
+.why h3{font-size:20px;font-weight:800;margin-top:18px;letter-spacing:-.02em}
+.why p{color:var(--sub);margin-top:6px}
+.steps{counter-reset:s;list-style:none;margin-top:40px;display:grid;gap:12px}
+.steps li{display:flex;gap:16px;align-items:flex-start;background:var(--bg-2);border-radius:20px;padding:22px 24px;font-weight:600;color:var(--text-2)}
+.steps li::before{counter-increment:s;content:counter(s);flex:none;width:28px;height:28px;border-radius:50%;background:var(--text);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:800}
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:48px}
+.cbox{background:var(--bg-2);border-radius:var(--radius);padding:32px;display:flex;flex-direction:column;gap:8px;transition:background .2s}
+.cbox .t{font-size:14px;color:var(--muted);font-weight:700}
+.cbox .v{font-size:20px;font-weight:700;line-height:1.5}
+.cbox .s{color:var(--sub);font-size:15px}
+a.cbox:hover{background:var(--bg-3)}
+@media (max-width:1020px){ .join-grid,.why,.contact{grid-template-columns:1fr} }
+</style>
+</head>
+<body data-page="join">
+<main>
+  <section class="page-hero">
+    <div class="blob b1"></div><div class="blob b2"></div>
+    <div class="wrap">
+      <span class="eyebrow">Join Our Lab</span>
+      <h1><span class="line"><span>Build the next way</span></span><span class="line"><span class="grad">people see the world.</span></span></h1>
+      <p class="lead">We welcome highly motivated individuals with a strong interest in computer graphics or computer vision.</p>
+    </div>
+  </section>
+
+  <section style="padding-bottom:40px">
+    <div class="wrap">
+      <div class="dark-card reveal">
+        <div class="glow"></div>
+        <span class="eyebrow">Open Positions</span>
+        <h2 class="h2">We're recruiting.</h2>
+        <p class="lead">If you're interested, feel free to reach out — a short email about yourself and what excites you is a great start.</p>
+        <div class="join-grid">
+          <div class="jbox"><div class="t">Positions</div><div class="v">Ph.D. / M.S. students<br>Undergraduate researchers</div></div>
+          <div class="jbox"><div class="t">Recommended skills</div><div class="v">OpenCV<br>PyTorch</div></div>
+          <div class="jbox"><div class="t">Lab email</div><div class="v"><span class="mail-text" data-mail=""></span></div></div>
+        </div>
+        <div class="btn-row"><button class="btn btn-primary" id="copyBtn">Copy email address</button><a class="btn btn-ghost" id="mailBtn">Send an email</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:80px">
+    <div class="wrap">
+      <span class="eyebrow reveal">Why IMM Lab</span>
+      <h2 class="h2 reveal" data-d="1">Research that leaves the lab.</h2>
+      <div class="why">
+        <div class="reveal" data-d="1"><b>1</b><h3>Publish</h3><p>We encourage students to pursue research that leads to academic publications.</p></div>
+        <div class="reveal" data-d="2"><b>2</b><h3>Collaborate</h3><p>Work on real-world problems together with industry partners.</p></div>
+        <div class="reveal" data-d="3"><b>3</b><h3>Build</h3><p>Hands-on work across NeRF, 3DGS, super-resolution, streaming and XR.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0" id="contact">
+    <div class="wrap">
+      <span class="eyebrow reveal">Contact</span>
+      <h2 class="h2 reveal" data-d="1">Come say hi.</h2>
+      <div class="contact">
+        <a class="cbox reveal" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Sejong+University+Ujeong-dang">
+          <span class="t">Lab ↗</span>
+          <span class="v">#104, Ujeong-dang</span>
+          <span class="s">Sejong University, 209 Neungdong-ro,<br>Gwangjin-gu, Seoul, South Korea</span>
+        </a>
+        <div class="cbox reveal" data-d="1">
+          <span class="t">Director's office</span>
+          <span class="v" id="office"></span>
+          <span class="s" id="officeSub"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+$(".jbox .mail-text").dataset.mail = LAB.email;
+$("#copyBtn").dataset.copy = LAB.email;
+$("#mailBtn").dataset.mailto = LAB.email;
+$("#office").textContent = LAB.director.office;
+$("#officeSub").textContent = `${LAB.director.name} · ${LAB.director.tel}`;
+</script>
+</body>
+</html>

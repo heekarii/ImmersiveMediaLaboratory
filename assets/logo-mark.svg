@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="190 30 440 410" width="440" height="410" role="img" aria-labelledby="immlab-title">
+  <title id="immlab-title">IMMLAB — Immersive Media Lab</title>
+  <defs>
+    <linearGradient id="immlab-beam" gradientUnits="userSpaceOnUse" x1="359.76" y1="178.86" x2="682.44" y2="247.02">
+      <stop offset="0" stop-color="#2625CD"/>
+      <stop offset="0.3333" stop-color="#3671EF"/>
+      <stop offset="0.6667" stop-color="#70B7F7"/>
+      <stop offset="1" stop-color="#84ECE6"/>
+    </linearGradient>
+    <linearGradient id="immlab-beamTint" gradientUnits="userSpaceOnUse" x1="557.43" y1="220.64" x2="455.74" y2="293.28">
+      <stop offset="0" stop-color="#E59CBF" stop-opacity="0"/>
+      <stop offset="1" stop-color="#E59CBF" stop-opacity="0.21"/>
+    </linearGradient>
+    <linearGradient id="immlab-lens" gradientUnits="userSpaceOnUse" x1="314.12" y1="237.38" x2="383.6" y2="236.48">
+      <stop offset="0" stop-color="#0F141C"/>
+      <stop offset="0.3333" stop-color="#2D4359"/>
+      <stop offset="0.6667" stop-color="#39507E"/>
+      <stop offset="1" stop-color="#4C79D6"/>
+    </linearGradient>
+    <radialGradient id="immlab-lensGlow" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="translate(382.73 257.66) scale(46.37 76.35)">
+      <stop offset="0" stop-color="#78F1FF" stop-opacity="0.71"/>
+      <stop offset="0.42" stop-color="#78F1FF" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#78F1FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="immlab-lensSheen" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="translate(369.71 218.25) scale(60.11 56.87)">
+      <stop offset="0" stop-color="#0000FF" stop-opacity="0.33"/>
+      <stop offset="0.5" stop-color="#0000FF" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#0000FF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="immlab-lab" gradientUnits="userSpaceOnUse" x1="428.9" y1="517.3" x2="776.9" y2="563.1">
+      <stop offset="0" stop-color="#3F5EAA"/>
+      <stop offset="0.25" stop-color="#416AC8"/>
+      <stop offset="0.5" stop-color="#4179E1"/>
+      <stop offset="0.75" stop-color="#478AEE"/>
+      <stop offset="1" stop-color="#63BCF6"/>
+    </linearGradient>
+  </defs>
+  <g id="immlab-symbol">
+    <g fill="#212A35">
+      <path d="M283.21 133.99L247.92 115.91A4.5 4.5 0 0 1 248.07 107.82L390.59 41.41A15.25 15.25 0 0 1 403.96 41.65L519.43 100.59A8.25 8.25 0 0 1 519.02 115.48L490.94 127.94A13.75 13.75 0 0 1 479.11 127.61L400.86 87.67A8.75 8.75 0 0 0 393.19 87.53L293.1 134.18A11.25 11.25 0 0 1 283.21 133.99Z"/>
+      <path d="M255.87 358.7L210.62 335.66A18.25 18.25 0 0 1 200.65 319.39L200.65 139.92A9 9 0 0 1 213.73 131.9L253.5 152.14A11 11 0 0 1 259.51 161.95L259.51 356.47A2.5 2.5 0 0 1 255.87 358.7Z"/>
+      <path d="M392.36 426.21L294.55 378.66A10.5 10.5 0 0 1 288.64 369.22L288.64 335.09A3 3 0 0 1 292.96 332.4L392.31 380.7A10 10 0 0 0 401.16 380.65L480.56 340.97A14.25 14.25 0 0 1 492.49 340.59L516.73 350.86A10 10 0 0 1 517.3 369.01L402.97 426.15A12 12 0 0 1 392.36 426.21Z"/>
+    </g>
+    <ellipse cx="343.05" cy="235.91" rx="50.24" ry="54.91" fill="url(#immlab-lens)"/>
+    <ellipse cx="343.05" cy="235.91" rx="50.24" ry="54.91" fill="url(#immlab-lensGlow)"/>
+    <ellipse cx="343.05" cy="235.91" rx="50.24" ry="54.91" fill="url(#immlab-lensSheen)"/>
+    <ellipse cx="358.36" cy="217.36" rx="12" ry="12.43" fill="#FFFFFF"/>
+    <path d="M600.21 350.92L427.96 284.92A10.12 10.12 0 0 1 421.46 275.46L421.46 194.76A10.12 10.12 0 0 1 427.96 185.31L600.21 119.3A13.38 13.38 0 0 1 618.37 131.79L618.37 338.43A13.38 13.38 0 0 1 600.21 350.92Z" fill="url(#immlab-beam)"/>
+    <path d="M600.21 350.92L427.96 284.92A10.12 10.12 0 0 1 421.46 275.46L421.46 194.76A10.12 10.12 0 0 1 427.96 185.31L600.21 119.3A13.38 13.38 0 0 1 618.37 131.79L618.37 338.43A13.38 13.38 0 0 1 600.21 350.92Z" fill="url(#immlab-beamTint)"/>
+  </g>
+  
+  
+</svg>

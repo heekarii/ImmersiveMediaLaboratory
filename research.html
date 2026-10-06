@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Research · IMM Lab</title>
+<meta name="description" content="Research areas of the Immersive Media Lab: immersive view generation, large-scale video streaming, interactive playback and analysis.">
+<link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+.research{display:grid;grid-template-columns:1fr 1fr;gap:64px}
+.r-steps .step{min-height:86vh;display:flex;flex-direction:column;justify-content:center;opacity:.25;transition:opacity .5s var(--ease);scroll-margin-top:80px}
+.r-steps .step.active{opacity:1}
+.step .no{font-size:15px;font-weight:800;color:var(--blue);margin-bottom:12px}
+.step h3{font-size:clamp(28px,3.4vw,40px);font-weight:800;letter-spacing:-.035em;line-height:1.2}
+.step p{color:var(--sub);font-size:18px;margin-top:16px}
+.rel{margin-top:28px;border-top:1px solid var(--line);padding-top:16px}
+.rel .t{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.rel a{display:block;padding:8px 0;font-weight:600;font-size:15px;color:var(--text-2);transition:color .2s}
+.rel a:hover{color:var(--blue)}
+.rel a span{color:var(--muted);font-weight:700;margin-right:8px;font-variant-numeric:tabular-nums}
+.r-visual{position:sticky;top:calc(50vh - 260px);height:520px;border-radius:32px;background:var(--ink);overflow:hidden;align-self:start;box-shadow:0 40px 80px -30px rgba(15,20,40,.45)}
+.r-visual .vis{position:absolute;inset:0;opacity:0;transition:opacity .6s var(--ease);pointer-events:none}
+.r-visual .vis.on{opacity:1;pointer-events:auto}
+.r-visual .cap{position:absolute;left:24px;bottom:22px;right:24px;display:flex;justify-content:space-between;align-items:center;gap:12px;color:rgba(255,255,255,.75);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.r-visual .cap b{color:#fff}
+#splat{width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}
+#splat:active{cursor:grabbing}
+.btn-mini{background:rgba(255,255,255,.12);color:#fff;padding:6px 12px;border-radius:9px;font-size:12px;font-weight:700;white-space:nowrap}
+.btn-mini:hover{background:rgba(255,255,255,.2)}
+.stream{display:flex;flex-direction:column;justify-content:center;padding:36px;gap:28px;color:#fff}
+.stream .row{display:flex;align-items:center;gap:14px}
+.node{flex:none;width:76px;height:76px;border-radius:20px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-size:12px;font-weight:700;color:rgba(255,255,255,.8);text-align:center;line-height:1.3}
+.pipe{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative;overflow:hidden}
+.pipe i{position:absolute;top:0;width:28px;height:6px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--cyan));animation:packet 1.6s linear infinite}
+.pipe i:nth-child(2){animation-delay:.53s}.pipe i:nth-child(3){animation-delay:1.06s}
+@keyframes packet{from{left:-30px}to{left:100%}}
+.bars{display:flex;align-items:flex-end;gap:6px;height:150px;padding:16px;border-radius:20px;background:rgba(255,255,255,.05)}
+.bars span{flex:1;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,var(--sky),var(--blue-deep));transition:height .6s var(--ease)}
+.q-badge{display:inline-flex;font-size:13px;font-weight:700;padding:6px 10px;border-radius:8px;background:rgba(132,236,230,.15);color:var(--cyan);white-space:nowrap}
+.pano{cursor:grab;touch-action:pan-y}
+.pano:active{cursor:grabbing}
+.pano-track{position:absolute;top:0;bottom:0;left:0;width:300%;will-change:transform}
+.pano-hint{position:absolute;top:22px;left:24px;color:rgba(255,255,255,.75);font-size:13px;font-weight:600}
+.bbox{position:absolute;border:2px solid var(--cyan);border-radius:6px}
+.bbox b{position:absolute;top:-24px;left:-2px;background:var(--cyan);color:#06222a;font-size:11px;padding:2px 6px;border-radius:5px 5px 5px 0;white-space:nowrap}
+@media (max-width:1020px){
+  .research{grid-template-columns:1fr;gap:0}
+  .r-visual{position:sticky;top:76px;height:min(42vh,340px);z-index:2;order:-1;border-radius:24px;box-shadow:0 0 0 28px #fff}
+  .r-steps .step{min-height:80vh;justify-content:flex-start;padding-top:8vh}
+  .cap .hint{display:none}
+}
+</style>
+</head>
+<body data-page="research">
+<main>
+  <section class="page-hero">
+    <div class="blob b1"></div><div class="blob b2"></div>
+    <div class="wrap">
+      <span class="eyebrow">Research Area</span>
+      <h1><span class="line"><span>From creation</span></span><span class="line"><span class="grad">to interaction.</span></span></h1>
+      <p class="lead">Our research covers computer vision techniques for the creation, transmission, playback, and interaction of immersive content.</p>
+    </div>
+  </section>
+
+  <section style="padding-bottom:80px">
+    <div class="wrap research">
+      <div class="r-steps" id="rSteps">
+        <div class="step active" data-i="0" id="gen">
+          <div class="no">01 · Create</div>
+          <h3>Immersive View Generation</h3>
+          <p>Natural-looking scenes from any viewpoint. We generate 6-DoF scenes with NeRF and 3D Gaussian Splatting, and reconstruct sharper views with super-resolution.</p>
+          <div class="tags"><span class="tag">6-DoF Scene Generation</span><span class="tag">NeRF</span><span class="tag">3DGS</span><span class="tag">Super-Resolution</span></div>
+          <div class="rel" data-area="gen"></div>
+        </div>
+        <div class="step" data-i="1" id="stream">
+          <div class="no">02 · Deliver</div>
+          <h3>Efficient Large-scale Video Streaming</h3>
+          <p>High quality without the buffering. AI-driven adaptive streaming, video optimization, and CNN-based compression and transmission — even for live 360° video.</p>
+          <div class="tags"><span class="tag">Adaptive Streaming</span><span class="tag">Video Optimization</span><span class="tag">CNN-based Compression</span></div>
+          <div class="rel" data-area="stream"></div>
+        </div>
+        <div class="step" data-i="2" id="play">
+          <div class="no">03 · Explore</div>
+          <h3>Interactive Playback &amp; Analysis</h3>
+          <p>Let viewers choose where to look. Interactive viewing, video summarization, and detection &amp; segmentation help people actively explore content.</p>
+          <div class="tags"><span class="tag">Interactive Viewing</span><span class="tag">Video Summary</span><span class="tag">Detection &amp; Segmentation</span></div>
+          <div class="rel" data-area="play"></div>
+        </div>
+      </div>
+
+      <div class="r-visual" id="rVisual">
+        <div class="vis on" data-v="0">
+          <canvas id="splat" aria-label="Rotating Gaussian splat visualization"></canvas>
+          <div class="cap"><span>iter <b id="iter">0</b> / 30,000<span class="hint"> · drag to rotate</span></span><button class="btn-mini" id="retrain">Retrain</button></div>
+        </div>
+        <div class="vis stream" data-v="1">
+          <div class="row"><div class="node">Live<br>Camera</div><div class="pipe"><i></i><i></i><i></i></div><div class="node">Edge<br>Server</div><div class="pipe"><i></i><i></i><i></i></div><div class="node">Viewer</div></div>
+          <div class="bars" id="bars"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.7);font-weight:600">
+            <span>Quality adapts to bandwidth in real time</span><span class="q-badge" id="qbadge">4K</span>
+          </div>
+        </div>
+        <div class="vis pano" data-v="2" id="pano">
+          <div class="pano-track" id="panoTrack"></div>
+          <div class="pano-hint">↔ Drag to look around 360°</div>
+          <div class="cap"><span>Yaw <b id="yaw">0°</b></span><span>Detection &amp; Segmentation</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-cta></section>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+/* related publications under each area */
+$$(".rel").forEach(el => {
+  const list = LAB.publications.filter(p => p.area === el.dataset.area);
+  el.innerHTML = `<div class="t">Related publications · ${list.length}</div>` +
+    list.map(p => `<a href="publications.html"><span>${p.y}</span>${esc(p.t)}</a>`).join("");
+});
+
+/* sticky steps */
+let activeVis = 0;
+const stepIO = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  const i = +e.target.dataset.i; activeVis = i;
+  $$("#rSteps .step").forEach(s => s.classList.toggle("active", +s.dataset.i === i));
+  $$("#rVisual .vis").forEach(v => v.classList.toggle("on", +v.dataset.v === i));
+}), {rootMargin: matchMedia("(max-width:1020px)").matches ? "-62% 0px -30% 0px" : "-45% 0px -45% 0px"});
+$$("#rSteps .step").forEach(s => stepIO.observe(s));
+
+/* 1) Gaussian splat point cloud — "trains" only while visible */
+(() => {
+  const cv = $("#splat"), ctx = cv.getContext("2d");
+  const pal = ["#2625CD","#3671EF","#70B7F7","#84ECE6","#E59CBF","#4C79D6"];
+  const sprites = pal.map(c => { const s = document.createElement("canvas"); s.width = s.height = 64; const g = s.getContext("2d");
+    const gr = g.createRadialGradient(32,32,0,32,32,32); gr.addColorStop(0,c); gr.addColorStop(.35,c+"cc"); gr.addColorStop(1,c+"00"); g.fillStyle = gr; g.fillRect(0,0,64,64); return s; });
+  const pts = [];
+  for (let i=0;i<1100;i++){ // torus knot (2,3)
+    const u = Math.random()*Math.PI*2, v = Math.random()*Math.PI*2;
+    const r = 2 + Math.cos(3*u), cx = r*Math.cos(2*u), cy = r*Math.sin(2*u), cz = -Math.sin(3*u);
+    const tube = .42 * Math.sqrt(Math.random());
+    const ci = Math.min(pal.length-1, Math.floor(((Math.sin(u*2)+1)/2)*4 + (Math.random()<.08?4:0)));
+    pts.push({tx:cx + tube*Math.cos(v), ty:cy + tube*Math.sin(v)*.8, tz:cz + tube*Math.sin(v), sx:0,sy:0,sz:0, s:.5+Math.random()*1.1, a:.35+Math.random()*.55, ci, rot:Math.random()*Math.PI, an:.5+Math.random()*.9});
+  }
+  const scatter = () => pts.forEach(p => { p.sx=(Math.random()-.5)*9; p.sy=(Math.random()-.5)*9; p.sz=(Math.random()-.5)*9; });
+  scatter();
+  let W=0,H=0,dpr=1, rotY=.4, rotX=.35, drag=null, it=-1, trained=0, prev=0;
+  const resize = () => { dpr = Math.min(2, devicePixelRatio||1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W*dpr; cv.height = H*dpr; };
+  new ResizeObserver(resize).observe(cv); resize();
+  cv.addEventListener("pointerdown", e => { drag = {x:e.clientX,y:e.clientY,ry:rotY,rx:rotX}; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener("pointermove", e => { if (!drag) return; rotY = drag.ry + (e.clientX-drag.x)*.008; rotX = Math.max(-1.2,Math.min(1.2, drag.rx + (e.clientY-drag.y)*.006)); });
+  cv.addEventListener("pointerup", () => drag = null);
+  $("#retrain").onclick = () => { scatter(); trained = 0; };
+  const iterEl = $("#iter");
+  function frame(now){
+    requestAnimationFrame(frame);
+    const dt = Math.min(50, now - prev); prev = now;
+    if (activeVis !== 0 || !W) return;
+    trained += dt;
+    const k = reduceMotion ? 1 : Math.min(1, trained / 3600), ease = 1 - Math.pow(1-k, 3);
+    const n = Math.round(ease*30000); if (n !== it){ it = n; iterEl.textContent = n.toLocaleString("en-US"); }
+    if (!drag && !reduceMotion) rotY += .004;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    const bg = ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*.7); bg.addColorStop(0,"#16203d"); bg.addColorStop(1,"#0b1020"); ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+    const cY = Math.cos(rotY), sY = Math.sin(rotY), cX = Math.cos(rotX), sX = Math.sin(rotX);
+    const scale = Math.min(W,H)*.14, f = 9, proj = [];
+    for (const p of pts){
+      const px = p.sx + (p.tx-p.sx)*ease, py = p.sy + (p.ty-p.sy)*ease, pz = p.sz + (p.tz-p.sz)*ease;
+      const x = px*cY - pz*sY; let z = px*sY + pz*cY; const y = py*cX - z*sX; z = py*sX + z*cX;
+      if (f + z < 3) continue;
+      const persp = Math.min(2.2, f/(f+z)); proj.push({p, X:W/2 + x*scale*persp, Y:H/2 + y*scale*persp, z, persp});
+    }
+    proj.sort((a,b) => b.z - a.z);
+    ctx.globalCompositeOperation = "lighter";
+    const sharp = .55 + ease*.45;
+    for (const q of proj){
+      const p = q.p, r = Math.min(160, (14 + p.s*18) * q.persp * (1.8 - sharp*.8) * (scale/120));
+      ctx.save(); ctx.globalAlpha = p.a * (.22 + sharp*.3) * Math.min(1, q.persp*1.05);
+      ctx.translate(q.X, q.Y); ctx.rotate(p.rot + rotY*.3); ctx.scale(1, p.an);
+      ctx.drawImage(sprites[p.ci], -r/2, -r/2, r, r); ctx.restore();
+    }
+    ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* 2) adaptive streaming bars */
+(() => {
+  const bars = $("#bars"), q = $("#qbadge"), n = 24, hs = [];
+  for (let i=0;i<n;i++){ const s = document.createElement("span"); bars.appendChild(s); hs.push(s); }
+  let phase = 0;
+  const tick = () => {
+    if (activeVis !== 1) return;
+    phase += .35;
+    hs.forEach((s,i) => { const v = .55 + .3*Math.sin(phase + i*.45) + .15*Math.sin(phase*.7 + i*1.3); s.style.height = Math.max(10, v*100) + "%"; });
+    const last = .55 + .3*Math.sin(phase + (n-1)*.45);
+    q.textContent = last > .75 ? "4K · 25 Mbps" : last > .5 ? "1440p · 12 Mbps" : "1080p · 6 Mbps";
+  };
+  activeVis = 1; tick(); activeVis = 0; setInterval(tick, 700);
+})();
+
+/* 3) draggable 360° panorama */
+(() => {
+  const pano = $("#pano"), track = $("#panoTrack"), yawEl = $("#yaw");
+  const tile = o => `
+    <div style="position:absolute;top:0;bottom:0;left:${o}%;width:33.3334%;background:linear-gradient(180deg,#0e1a3a 0%,#2a3f7a 45%,#6d8fd8 62%,#1d2540 63%,#121829 100%)">
+      <div style="position:absolute;left:8%;top:18%;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,#fff6d8,#f8d58a 50%,transparent 72%)"></div>
+      ${[12,22,30,44,52,63,71,84,92].map((x,i)=>`<div style="position:absolute;bottom:37%;left:${x}%;width:${6+i%3*3}%;height:${14+(i*37)%22}%;background:#1a2340;border-radius:4px 4px 0 0"></div>`).join("")}
+      <div class="bbox" style="left:20%;bottom:16%;width:9%;height:24%"><b>person 0.97</b></div>
+      <div class="bbox" style="left:58%;bottom:20%;width:16%;height:12%;border-color:#e59cbf"><b style="background:#e59cbf">car 0.91</b></div>
+      <div class="bbox" style="left:80%;bottom:14%;width:7%;height:21%"><b>person 0.88</b></div>
+    </div>`;
+  track.innerHTML = tile(0) + tile(33.3333) + tile(66.6666);
+  let off = 0, drag = null, vel = 0, last = 0;
+  const apply = () => {
+    const w = pano.clientWidth || 1; off = ((off % w) + w) % w;
+    track.style.transform = `translateX(${-off - w}px)`;
+    yawEl.textContent = Math.round(off / w * 360) + "°";
+  };
+  pano.addEventListener("pointerdown", e => { drag = {x:e.clientX, o:off}; last = e.clientX; vel = 0; pano.setPointerCapture(e.pointerId); });
+  pano.addEventListener("pointermove", e => { if (!drag) return; off = drag.o - (e.clientX - drag.x); vel = last - e.clientX; last = e.clientX; apply(); });
+  pano.addEventListener("pointerup", () => { drag = null; });
+  const loop = () => { requestAnimationFrame(loop); if (activeVis !== 2 || drag) return; if (Math.abs(vel) > .1){ off += vel; vel *= .94; } else if (!reduceMotion) off += .25; apply(); };
+  new ResizeObserver(apply).observe(pano); loop();
+})();
+</script>
+</body>
+</html>

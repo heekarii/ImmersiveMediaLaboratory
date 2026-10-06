@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Members · IMM Lab</title>
+<meta name="description" content="Members of the Immersive Media Lab, Sejong University.">
+<link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+.lead-card{display:flex;align-items:center;gap:24px;background:#fff;border-radius:28px;padding:28px 32px;transition:transform .25s var(--ease),box-shadow .25s}
+.lead-card:hover{transform:translateY(-4px);box-shadow:0 24px 48px -24px rgba(0,27,55,.25)}
+.lead-card .avatar{width:88px;height:88px;font-size:30px;background:linear-gradient(135deg,var(--blue-deep),var(--blue) 50%,var(--cyan))}
+.lead-card h3{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.lead-card p{color:var(--sub);font-weight:600}
+.lead-card .more{margin-left:auto}
+.group-title{font-size:15px;font-weight:700;color:var(--muted);margin:56px 0 16px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+@media (max-width:600px){ .lead-card{flex-wrap:wrap;padding:24px} .lead-card .more{margin-left:0} }
+</style>
+</head>
+<body data-page="members">
+<main>
+  <section class="page-hero">
+    <div class="blob b1"></div><div class="blob b2"></div>
+    <div class="wrap">
+      <span class="eyebrow">Members</span>
+      <h1><span class="line"><span>The people</span></span><span class="line"><span class="grad">behind the pixels.</span></span></h1>
+      <p class="lead">Tap a research keyword to see who's working on what.</p>
+    </div>
+  </section>
+
+  <section class="section gray" style="padding-top:64px">
+    <div class="wrap">
+      <div class="group-title" style="margin-top:0">Director</div>
+      <a href="director.html" class="lead-card reveal" id="leadCard"></a>
+
+      <div class="group-title">Students &amp; Researchers <span class="count"><b id="count">0</b> highlighted</span></div>
+      <div class="chips reveal" id="kw" style="margin-bottom:20px"></div>
+      <div class="members" id="grid"></div>
+    </div>
+  </section>
+
+  <section data-cta></section>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+const d = LAB.director, M = LAB.members;
+$("#leadCard").innerHTML = `<div class="avatar">${initials(d.name)}</div><div><h3>${esc(d.name)}</h3><p>${esc(d.title)} · ${esc(d.dept)}</p></div><span class="more">Profile</span>`;
+
+const kws = [...new Set(M.flatMap(m => m.k))].sort((a,b) => M.filter(m => m.k.includes(b)).length - M.filter(m => m.k.includes(a)).length);
+$("#grid").innerHTML = M.map(memberCard).join("") +
+  `<a href="join.html" class="member join reveal"><div class="plus">+</div><h4>You're next</h4><div class="role">Join IMM Lab →</div></a>`;
+tilt($$("#grid .member"));
+$("#count").textContent = M.length;
+
+chips($("#kw"), kws.map(k => [k, `${k} · ${M.filter(m => m.k.includes(k)).length}`]), sel => {
+  let n = 0;
+  $$("#grid .member:not(.join)").forEach(m => {
+    const has = !sel || m.dataset.k.split("|").includes(sel); if (has) n++;
+    m.classList.toggle("dim", !has);
+    $$(".tag", m).forEach(t => t.classList.toggle("hit", !!sel && t.dataset.t === sel));
+  });
+  $("#count").textContent = n;
+}, "Everyone");
+</script>
+</body>
+</html>
