@@ -44,6 +44,7 @@
         <span class="count"><b id="count">0</b> members</span>
       </div>
       <div class="members" id="grid"></div>
+      <div class="empty" id="none" hidden>No members in this position yet.</div>
     </div>
   </section>
 
@@ -56,8 +57,9 @@
 const d = LAB.director, M = LAB.members;
 $("#leadCard").innerHTML = `<div class="avatar">${initials(d.name)}</div><div><h2>${esc(d.name)}</h2><p>${esc(d.title)} · ${esc(d.dept)}</p></div><span class="more">Profile</span>`;
 
-/* position filter — positions appear in the order they're listed in data.js */
-const positions = [...new Set(M.map(m => m.r))];
+/* position filter — fixed ranks first (shown even when empty), then any other position found in data.js */
+const RANKS = ["Ph.D. Student", "Master Student", "Undergraduate Researcher"];
+const positions = [...RANKS, ...new Set(M.map(m => m.r).filter(r => !RANKS.includes(r)))];
 $("#posSeg").insertAdjacentHTML("beforeend", `<button class="on" data-r="">All</button>` + positions.map(r => `<button data-r="${esc(r)}">${esc(r)}s</button>`).join(""));
 $("#grid").innerHTML = M.map(memberCard).join("");
 $$("#grid .member").forEach(c => c.style.background = "var(--bg-2)");
@@ -66,6 +68,7 @@ const filter = r => {
   let n = 0;
   $$("#grid .member").forEach(c => { const show = !r || c.dataset.r === r; c.classList.toggle("hide", !show); if (show) n++; });
   $("#count").textContent = n;
+  $("#none").hidden = n > 0;
 };
 seg($("#posSeg"), b => filter(b.dataset.r)); filter("");
 

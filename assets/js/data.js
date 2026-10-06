@@ -75,7 +75,7 @@ window.LAB = {
   /* names highlighted in author lists */
   labNames: ["Seunghwa Jeong","Junseo Choi","Hyeji Lee","Jaehwan Kim","Youngjun Choi","Sangjun Jeong","Heeseok Cho","Seohyun Yun"],
 
-  /* r: position — used for the filter on the Members page.
+  /* r: position — "Ph.D. Student" | "Master Student" | "Undergraduate Researcher" (used for the Members filter).
      Optional detail fields (shown when a card is clicked): email ("id|domain"), bio, links: [{l:"GitHub", u:"https://..."}] */
   members: [
     {n:"Junseo Choi",   r:"Master Student",           k:["3D Gaussian Splatting","Super-Resolution","Pose Estimation","XR"]},

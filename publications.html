@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="assets/css/style.css">
 <style>
 .tools{display:flex;flex-direction:column;gap:12px;margin-top:56px}
+.segs{display:flex;gap:8px;flex-wrap:wrap}
 .tools .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 </style>
 </head>
@@ -28,7 +29,10 @@
 
       <div class="tools reveal">
         <div class="row">
-          <div class="seg" id="scopeSeg"><span class="thumb"></span><button class="on" data-s="">All</button><button data-s="intl">International</button><button data-s="dom">Domestic</button></div>
+          <div class="segs">
+            <div class="seg" id="scopeSeg"><span class="thumb"></span><button class="on" data-s="">All</button><button data-s="intl">International</button><button data-s="dom">Domestic</button></div>
+            <div class="seg" id="kindSeg"><span class="thumb"></span><button class="on" data-k="">All</button><button data-k="j">Journal</button><button data-k="c">Conference</button></div>
+          </div>
           <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search title, author, venue"></label>
         </div>
         <span class="count"><b id="count">0</b> papers</span>
@@ -49,13 +53,14 @@ $("#sIntl").dataset.count = PUBS.filter(p => p.scope === "intl").length;
 $("#sDom").dataset.count = PUBS.filter(p => p.scope === "dom").length;
 $("#sTop").dataset.count = PUBS.filter(p => /Pattern Analysis|Transactions on Graphics/.test(p.v)).length;
 
-const F = {scope:"", q:""};
+const F = {scope:"", k:"", q:""};
 seg($("#scopeSeg"), b => { F.scope = b.dataset.s; render(); });
+seg($("#kindSeg"), b => { F.k = b.dataset.k; render(); });
 $("#q").addEventListener("input", e => { F.q = e.target.value.trim(); render(); });
 
 function render(){
   const q = F.q.toLowerCase();
-  const list = PUBS.filter(p => (!F.scope || p.scope === F.scope) && (!q || (p.t+" "+p.a+" "+p.v).toLowerCase().includes(q)));
+  const list = PUBS.filter(p => (!F.scope || p.scope === F.scope) && (!F.k || p.k === F.k) && (!q || (p.t+" "+p.a+" "+p.v).toLowerCase().includes(q)));
   $("#count").textContent = list.length;
   if (!list.length){ $("#pubs").innerHTML = `<div class="empty">No papers found. Try another keyword.</div>`; return; }
   let i = 0;
