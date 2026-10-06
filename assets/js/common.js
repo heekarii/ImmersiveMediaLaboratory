@@ -15,7 +15,7 @@ const PAGES = [
   ["projects",     "Projects",     "projects.html"],
   ["publications", "Publications", "publications.html"],
   ["members",      "Members",      "members.html"],
-  ["activities",   "Activities",   "activities.html"],
+  ["gallery",      "Gallery",      "gallery.html"],
 ];
 
 /* ---------- chrome ---------- */
@@ -136,17 +136,17 @@ function pubRow(p, q="", i=0){
       <div class="au">${hilite(p.a,q).replace(labNameRe, "<b>$1</b>")}</div>
       <div class="ve">${(p.b||[]).map(b => `<span class="badge ${b.startsWith("Top")?"gold":""}">${esc(b)}</span>`).join("")}${hilite(p.v,q)}</div>
     </div>
-    <span class="kind ${p.k}">${p.k==="j"?"Journal":"Conference"}</span>
+    <span class="kind ${p.k}">${p.scope==="intl"?"Intl.":"Domestic"} ${p.k==="j"?"Journal":"Conference"}</span>
   </article>`;
 }
 
 /* ---------- member card + tilt ---------- */
 function memberCard(m, i){
-  return `<div class="member reveal" data-d="${i%4}" data-k="${esc(m.k.join("|"))}">
+  return `<button class="member reveal" data-d="${i%4}" data-i="${i}" data-r="${esc(m.r)}" aria-label="${esc(m.n)} — details">
     <div class="avatar" style="background:${avatarBg(i)}">${initials(m.n)}</div>
     <h4>${esc(m.n)}</h4><div class="role">${esc(m.r)}</div>
-    <div class="tags">${m.k.map(k => `<span class="tag" data-t="${esc(k)}">${esc(k)}</span>`).join("")}</div>
-  </div>`;
+    <div class="tags">${m.k.map(k => `<span class="tag">${esc(k)}</span>`).join("")}</div>
+  </button>`;
 }
 function tilt(cards){
   if (reduceMotion || !matchMedia("(hover:hover)").matches) return;
@@ -158,6 +158,25 @@ function tilt(cards){
     card.addEventListener("pointerleave", () => card.style.transform = "");
   });
 }
+
+/* detail drawer: openDrawer(html) */
+let _drawer;
+function openDrawer(html){
+  if (!_drawer){
+    document.body.insertAdjacentHTML("beforeend", `<div class="drawer" id="drawer" aria-hidden="true"><div class="d-panel" role="dialog" aria-modal="true"><button class="d-close" aria-label="Close">×</button><div id="dBody"></div></div></div>`);
+    _drawer = $("#drawer");
+    $(".d-close", _drawer).onclick = closeDrawer;
+    _drawer.addEventListener("click", e => { if (e.target === _drawer) closeDrawer(); });
+    addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
+  }
+  $("#dBody").innerHTML = html;
+  _drawer.classList.add("open"); _drawer.setAttribute("aria-hidden","false");
+  $(".d-panel", _drawer).scrollTop = 0;
+  $(".d-close", _drawer).focus({preventScroll:true});
+  bindMail(_drawer);
+  return _drawer;
+}
+function closeDrawer(){ if (_drawer){ _drawer.classList.remove("open"); _drawer.setAttribute("aria-hidden","true"); } }
 
 /* glow that follows the pointer on dark cards */
 function glowFollow(card){

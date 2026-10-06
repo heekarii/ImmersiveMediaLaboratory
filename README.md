@@ -6,10 +6,10 @@
 index.html           Home
 research.html        Research (3D splat / streaming / 360° 인터랙티브 비주얼)
 director.html        Director
-projects.html        Projects (타임라인·리스트, 필터, 상세 패널)
+projects.html        Projects (진행/완료 목록 + 상세 패널)
 publications.html    Publications
 members.html         Members
-activities.html      Activities
+gallery.html         Gallery (앨범 + 라이트박스)
 join.html            Join us + Contact
 assets/css/style.css 공통 스타일
 assets/js/data.js    ★ 모든 내용 데이터 (여기만 고치면 전 페이지 반영)
@@ -18,10 +18,11 @@ assets/logo*.svg     로고
 ```
 
 ## 내용 수정
-`assets/js/data.js`만 고치면 돼요 (projects, publications, members, activities 등).
+`assets/js/data.js`만 고치면 돼요 (projects, publications, members, gallery 등).
 - 프로젝트: `s`/`e` 시작·종료 연도, `r`에 `"PI"`/`"Lead"`/`""`
-- 논문: `k`는 `"j"`(저널)/`"c"`(학회), `area`는 `gen`/`stream`/`play`
-- 활동 사진: `assets/photos/`에 넣고 `img`에 경로 입력
+- 논문: `k`는 `"j"`/`"c"`, `scope`는 `"intl"`(국제)/`"dom"`(국내), `area`는 Research 페이지 분류
+- 멤버 상세: `bio`, `email`, `links` 선택 입력 (카드 클릭 시 표시)
+- 갤러리: 사진을 `assets/photos/`에 넣고 `cover`(대표), `photos`(앨범) 경로 입력
 
 ## 로컬 미리보기
 ```

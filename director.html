@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="assets/css/style.css">
 <style>
 .dir{display:grid;grid-template-columns:360px 1fr;gap:32px;align-items:start}
-.dir-card{background:#fff;border-radius:var(--radius);padding:32px;position:sticky;top:96px}
+.dir-card{background:var(--bg-2);border-radius:var(--radius);padding:32px;position:sticky;top:96px}
 .dir-card .avatar{width:96px;height:96px;font-size:34px;background:linear-gradient(135deg,var(--blue-deep),var(--blue) 50%,var(--cyan))}
 .dir-card h2{font-size:26px;font-weight:800;margin-top:20px;letter-spacing:-.03em}
 .dir-card .role{color:var(--sub);font-weight:600;margin-top:4px}
@@ -29,7 +29,7 @@
 .c-item .yr{font-size:14px;font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums}
 .c-item h4{font-size:18px;font-weight:800;margin-top:2px}
 .c-item p{color:var(--sub);font-size:15px}
-.proj-bars{background:#fff;border-radius:var(--radius);padding:24px 28px}
+.proj-bars{background:var(--bg-2);border-radius:var(--radius);padding:24px 28px}
 .pb{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:12px 0;align-items:center;border-bottom:1px solid var(--line)}
 .pb:last-child{border-bottom:0}
 .pb .yr{font-weight:700;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
@@ -40,20 +40,13 @@
 </head>
 <body data-page="director">
 <main>
-  <section class="page-hero">
-    <div class="blob b1"></div><div class="blob b2"></div>
-    <div class="wrap">
-      <span class="eyebrow">Director</span>
-      <h1><span class="line"><span>Leading the lab,</span></span><span class="line"><span class="grad">from lab to industry.</span></span></h1>
-      <p class="lead">A decade in industry building immersive media platforms, now advancing them in academia.</p>
-    </div>
-  </section>
+  <section class="page-head"><div class="wrap"><h1>Director</h1></div></section>
 
-  <section class="section gray" style="padding-top:80px">
+  <section style="padding-block:40px 120px">
     <div class="wrap dir">
       <aside class="dir-card reveal" id="card"></aside>
       <div>
-        <div class="block reveal"><h3>Education</h3><div class="panel"><ul class="tl" id="edu"></ul></div></div>
+        <div class="block reveal"><h3>Education</h3><div class="panel" style="background:var(--bg-2)"><ul class="tl" id="edu"></ul></div></div>
         <div class="block reveal"><h3>Work Experience</h3><div class="career" id="work"></div></div>
         <div class="block reveal"><h3>Projects led as PI / Lead <a href="projects.html" class="more">All projects</a></h3><div class="proj-bars" id="led"></div></div>
         <div class="block reveal"><h3>Selected Journal Papers <a href="publications.html" class="more">All publications</a></h3><div id="pubs"></div></div>

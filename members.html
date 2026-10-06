@@ -12,59 +12,82 @@
 .lead-card{display:flex;align-items:center;gap:24px;background:#fff;border-radius:28px;padding:28px 32px;transition:transform .25s var(--ease),box-shadow .25s}
 .lead-card:hover{transform:translateY(-4px);box-shadow:0 24px 48px -24px rgba(0,27,55,.25)}
 .lead-card .avatar{width:88px;height:88px;font-size:30px;background:linear-gradient(135deg,var(--blue-deep),var(--blue) 50%,var(--cyan))}
-.lead-card h3{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.lead-card h2{font-size:24px;font-weight:800;letter-spacing:-.02em}
 .lead-card p{color:var(--sub);font-weight:600}
 .lead-card .more{margin-left:auto}
 .group-title{font-size:15px;font-weight:700;color:var(--muted);margin:56px 0 16px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.member.hide{display:none}
+.m-head{display:flex;gap:20px;align-items:center}
+.m-head .avatar{width:80px;height:80px;font-size:28px}
+.m-head .role{color:var(--sub);font-weight:600;margin-top:2px}
+.m-bio{color:var(--text-2);line-height:1.7}
+.m-links{display:flex;gap:8px;flex-wrap:wrap}
+.m-pub{display:block;padding:14px 0;border-bottom:1px solid var(--line)}
+.m-pub:last-child{border-bottom:0}
+.m-pub .yr{font-size:13px;font-weight:700;color:var(--blue)}
+.m-pub h4{font-size:15px;font-weight:700;line-height:1.45;margin-top:2px}
+.m-pub:hover h4{color:var(--blue)}
 @media (max-width:600px){ .lead-card{flex-wrap:wrap;padding:24px} .lead-card .more{margin-left:0} }
 </style>
 </head>
 <body data-page="members">
 <main>
-  <section class="page-hero">
-    <div class="blob b1"></div><div class="blob b2"></div>
-    <div class="wrap">
-      <span class="eyebrow">Members</span>
-      <h1><span class="line"><span>The people</span></span><span class="line"><span class="grad">behind the pixels.</span></span></h1>
-      <p class="lead">Tap a research keyword to see who's working on what.</p>
-    </div>
-  </section>
+  <section class="page-head"><div class="wrap"><h1>Members</h1></div></section>
 
-  <section class="section gray" style="padding-top:64px">
+  <section style="padding-block:40px 120px">
     <div class="wrap">
       <div class="group-title" style="margin-top:0">Director</div>
-      <a href="director.html" class="lead-card reveal" id="leadCard"></a>
+      <a href="director.html" class="lead-card reveal" id="leadCard" style="background:var(--bg-2)"></a>
 
-      <div class="group-title">Students &amp; Researchers <span class="count"><b id="count">0</b> highlighted</span></div>
-      <div class="chips reveal" id="kw" style="margin-bottom:20px"></div>
+      <div class="group-title">
+        <div class="seg" id="posSeg"><span class="thumb"></span></div>
+        <span class="count"><b id="count">0</b> members</span>
+      </div>
       <div class="members" id="grid"></div>
     </div>
   </section>
 
-  <section data-cta></section>
+  <section data-cta style="padding-top:0"></section>
 </main>
 
 <script src="assets/js/data.js"></script>
 <script src="assets/js/common.js"></script>
 <script>
 const d = LAB.director, M = LAB.members;
-$("#leadCard").innerHTML = `<div class="avatar">${initials(d.name)}</div><div><h3>${esc(d.name)}</h3><p>${esc(d.title)} · ${esc(d.dept)}</p></div><span class="more">Profile</span>`;
+$("#leadCard").innerHTML = `<div class="avatar">${initials(d.name)}</div><div><h2>${esc(d.name)}</h2><p>${esc(d.title)} · ${esc(d.dept)}</p></div><span class="more">Profile</span>`;
 
-const kws = [...new Set(M.flatMap(m => m.k))].sort((a,b) => M.filter(m => m.k.includes(b)).length - M.filter(m => m.k.includes(a)).length);
-$("#grid").innerHTML = M.map(memberCard).join("") +
-  `<a href="join.html" class="member join reveal"><div class="plus">+</div><h4>You're next</h4><div class="role">Join IMM Lab →</div></a>`;
+/* position filter — positions appear in the order they're listed in data.js */
+const positions = [...new Set(M.map(m => m.r))];
+$("#posSeg").insertAdjacentHTML("beforeend", `<button class="on" data-r="">All</button>` + positions.map(r => `<button data-r="${esc(r)}">${esc(r)}s</button>`).join(""));
+$("#grid").innerHTML = M.map(memberCard).join("");
+$$("#grid .member").forEach(c => c.style.background = "var(--bg-2)");
 tilt($$("#grid .member"));
-$("#count").textContent = M.length;
-
-chips($("#kw"), kws.map(k => [k, `${k} · ${M.filter(m => m.k.includes(k)).length}`]), sel => {
+const filter = r => {
   let n = 0;
-  $$("#grid .member:not(.join)").forEach(m => {
-    const has = !sel || m.dataset.k.split("|").includes(sel); if (has) n++;
-    m.classList.toggle("dim", !has);
-    $$(".tag", m).forEach(t => t.classList.toggle("hit", !!sel && t.dataset.t === sel));
-  });
+  $$("#grid .member").forEach(c => { const show = !r || c.dataset.r === r; c.classList.toggle("hide", !show); if (show) n++; });
   $("#count").textContent = n;
-}, "Everyone");
+};
+seg($("#posSeg"), b => filter(b.dataset.r)); filter("");
+
+/* member detail */
+const pubsOf = name => LAB.publications.filter(p => p.a.toLowerCase().split(/,\s*/).includes(name.toLowerCase()));
+function openMember(i){
+  const m = M[i], pubs = pubsOf(m.n);
+  const dlg = openDrawer(`
+    <div class="m-head"><div class="avatar" style="background:${avatarBg(i)}">${initials(m.n)}</div>
+      <div><h3>${esc(m.n)}</h3><div class="role">${esc(m.r)}</div></div></div>
+    ${m.bio ? `<p class="m-bio">${esc(m.bio)}</p>` : ""}
+    <div><div class="d-sec">Research interests</div><div class="tags" style="margin-top:10px">${m.k.map(k => `<span class="tag">${esc(k)}</span>`).join("")}</div></div>
+    ${m.email || (m.links && m.links.length) ? `<div class="m-links">
+      ${m.email ? `<button class="btn btn-ghost btn-sm" data-copy="${esc(m.email)}">Copy email</button>` : ""}
+      ${(m.links||[]).map(l => `<a class="btn btn-ghost btn-sm" href="${esc(l.u)}" target="_blank" rel="noopener">${esc(l.l)} ↗</a>`).join("")}</div>` : ""}
+    <div><div class="d-sec">Publications · ${pubs.length}</div>
+      ${pubs.length ? pubs.map(p => `<a class="m-pub" href="publications.html"><span class="yr">${p.y} · ${p.scope==="intl"?"International":"Domestic"}</span><h4>${esc(p.t)}</h4></a>`).join("")
+        : `<p style="color:var(--muted);margin-top:8px">No publications yet.</p>`}</div>
+    <div class="btn-row" style="margin-top:8px"><button class="btn btn-ghost" data-nav="-1">← Previous</button><button class="btn btn-ghost" data-nav="1">Next →</button></div>`);
+  $$("[data-nav]", dlg).forEach(b => b.onclick = () => openMember((i + +b.dataset.nav + M.length) % M.length));
+}
+$("#grid").addEventListener("click", e => { const c = e.target.closest(".member"); if (c) openMember(+c.dataset.i); });
 </script>
 </body>
 </html>

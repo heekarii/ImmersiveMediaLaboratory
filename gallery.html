@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gallery · IMM Lab</title>
+<meta name="description" content="Photos from conferences and lab events of the Immersive Media Lab, Sejong University.">
+<link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+.albums{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.album{aspect-ratio:4/5;border-radius:28px;position:relative;overflow:hidden;color:#fff;padding:28px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;transition:transform .35s var(--ease)}
+.album:hover{transform:translateY(-6px)}
+.album img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;transition:transform .8s var(--ease)}
+.album:hover img{transform:scale(1.05)}
+.album::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.45));z-index:0}
+.album>*{position:relative;z-index:1}
+.album .top{display:flex;justify-content:space-between;font-size:13px;font-weight:700;opacity:.9}
+.album h2{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.15}
+.album .meta{font-size:15px;opacity:.9;margin-top:8px;font-weight:600}
+.album .big{position:absolute;right:-12px;top:44px;font-size:160px;font-weight:900;letter-spacing:-.06em;opacity:.14;line-height:1;z-index:0;transition:transform .8s var(--ease)}
+.album:hover .big{transform:translateX(-16px)}
+
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:90;background:rgba(8,10,16,.94);color:#fff;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .3s}
+.lb.open{opacity:1;pointer-events:auto}
+.lb-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:calc(16px + env(safe-area-inset-top,0px)) 20px 16px}
+.lb-bar h3{font-size:18px;font-weight:800}
+.lb-bar span{color:rgba(255,255,255,.6);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.lb-x{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.1);font-size:20px;color:#fff;flex:none}
+.lb-stage{flex:1;display:grid;place-items:center;position:relative;min-height:0;padding:0 64px;touch-action:pan-y}
+.lb-stage img{max-width:100%;max-height:100%;object-fit:contain;border-radius:12px;animation:fade .35s var(--ease)}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font-size:22px}
+.lb-nav:hover{background:rgba(255,255,255,.2)}
+.lb-prev{left:12px}.lb-next{right:12px}
+.lb-thumbs{display:flex;gap:8px;overflow-x:auto;padding:16px 20px calc(16px + env(safe-area-inset-bottom,0px));scrollbar-width:none}
+.lb-thumbs img{width:64px;height:48px;object-fit:cover;border-radius:8px;opacity:.45;cursor:pointer;flex:none;transition:opacity .2s}
+.lb-thumbs img.on{opacity:1;outline:2px solid #fff}
+.lb-empty{text-align:center;color:rgba(255,255,255,.7);font-weight:600;line-height:1.7}
+@media (max-width:1020px){ .albums{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:600px){ .albums{grid-template-columns:1fr} .album{aspect-ratio:5/4} .lb-stage{padding:0 12px} .lb-nav{display:none} }
+</style>
+</head>
+<body data-page="gallery">
+<main>
+  <section class="page-head"><div class="wrap"><h1>Gallery</h1></div></section>
+  <section style="padding-block:40px 120px"><div class="wrap"><div class="albums" id="albums"></div></div></section>
+</main>
+
+<div class="lb" id="lb" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="lb-bar"><div><h3 id="lbTitle"></h3><span id="lbCount"></span></div><button class="lb-x" id="lbClose" aria-label="Close">×</button></div>
+  <div class="lb-stage" id="lbStage"></div>
+  <div class="lb-thumbs" id="lbThumbs"></div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+const G = LAB.gallery.map(a => ({...a, y:(a.d.match(/\d{4}/)||[""])[0]}));
+$("#albums").innerHTML = G.map((a,i) => `
+  <button class="album reveal" data-d="${i%3+1}" data-i="${i}" style="background:linear-gradient(150deg,${a.g[0]},${a.g[1]} 55%,${a.g[2]})">
+    ${a.cover ? `<img src="${esc(a.cover)}" alt="" loading="lazy">` : ""}
+    <span class="big">'${esc(a.y.slice(2))}</span>
+    <span class="top"><span>${esc(a.k)}</span><span>${a.photos.length ? `${a.photos.length} photos` : ""}</span></span>
+    <div><h2>${esc(a.t)}</h2><div class="meta">${esc(a.d)}<br>${esc(a.p)}</div></div>
+  </button>`).join("");
+
+/* lightbox */
+const lb = $("#lb");
+let album = null, idx = 0;
+function show(n){
+  const ph = album.photos;
+  if (!ph.length){ $("#lbStage").innerHTML = `<div class="lb-empty">Photos for this event are coming soon.</div>`; $("#lbCount").textContent = `${album.d} · ${album.p}`; $("#lbThumbs").innerHTML = ""; return; }
+  idx = (n + ph.length) % ph.length;
+  $("#lbStage").innerHTML = `<button class="lb-nav lb-prev" aria-label="Previous">‹</button><img src="${esc(ph[idx])}" alt="${esc(album.t)} photo ${idx+1}"><button class="lb-nav lb-next" aria-label="Next">›</button>`;
+  $("#lbCount").textContent = `${idx+1} / ${ph.length}`;
+  $$("#lbThumbs img").forEach((t,k) => t.classList.toggle("on", k === idx));
+  $(".lb-prev").onclick = () => show(idx-1); $(".lb-next").onclick = () => show(idx+1);
+}
+function openAlbum(i){
+  album = G[i];
+  $("#lbTitle").textContent = album.t;
+  $("#lbThumbs").innerHTML = album.photos.map((p,k) => `<img src="${esc(p)}" alt="" data-k="${k}" loading="lazy">`).join("");
+  show(0);
+  lb.classList.add("open"); lb.setAttribute("aria-hidden","false"); document.body.style.overflow = "hidden";
+  $("#lbClose").focus({preventScroll:true});
+}
+const closeLb = () => { lb.classList.remove("open"); lb.setAttribute("aria-hidden","true"); document.body.style.overflow = ""; };
+$("#albums").addEventListener("click", e => { const a = e.target.closest(".album"); if (a) openAlbum(+a.dataset.i); });
+$("#lbThumbs").addEventListener("click", e => { if (e.target.dataset.k) show(+e.target.dataset.k); });
+$("#lbClose").onclick = closeLb;
+addEventListener("keydown", e => {
+  if (!lb.classList.contains("open")) return;
+  if (e.key === "Escape") closeLb(); else if (e.key === "ArrowLeft") show(idx-1); else if (e.key === "ArrowRight") show(idx+1);
+});
+let sx = null; // swipe
+$("#lbStage").addEventListener("pointerdown", e => sx = e.clientX);
+$("#lbStage").addEventListener("pointerup", e => { if (sx !== null && album.photos.length && Math.abs(e.clientX - sx) > 50) show(idx + (e.clientX < sx ? 1 : -1)); sx = null; });
+</script>
+</body>
+</html>

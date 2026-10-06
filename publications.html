@@ -9,39 +9,29 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="assets/css/style.css">
 <style>
-.tools{display:flex;flex-direction:column;gap:16px;margin-top:64px}
+.tools{display:flex;flex-direction:column;gap:12px;margin-top:56px}
 .tools .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 </style>
 </head>
 <body data-page="publications">
 <main>
-  <section class="page-hero">
-    <div class="blob b1"></div><div class="blob b2"></div>
-    <div class="wrap">
-      <span class="eyebrow">Publications</span>
-      <h1><span class="line"><span>Ideas, peer-reviewed</span></span><span class="line"><span class="grad">and published.</span></span></h1>
-      <p class="lead">From top-tier venues like IEEE TPAMI and ACM TOG to the Korea Computer Graphics Society — we keep shipping research.</p>
-    </div>
-  </section>
+  <section class="page-head"><div class="wrap"><h1>Publications</h1></div></section>
 
-  <section style="padding-bottom:120px">
+  <section style="padding-block:40px 120px">
     <div class="wrap">
       <div class="stats" style="margin-top:0">
         <div class="stat reveal" data-d="1"><div class="num"><span data-count="0" id="sAll">0</span></div><div class="lbl">Publications</div></div>
-        <div class="stat reveal" data-d="2"><div class="num"><span data-count="0" id="sJ">0</span></div><div class="lbl">Journal articles</div></div>
-        <div class="stat reveal" data-d="3"><div class="num"><span data-count="0" id="sTop">0</span></div><div class="lbl">TPAMI &amp; TOG papers</div></div>
-        <div class="stat reveal" data-d="4"><div class="num"><span data-count="0" id="sStu">0</span></div><div class="lbl">Student-led papers</div></div>
+        <div class="stat reveal" data-d="2"><div class="num"><span data-count="0" id="sIntl">0</span></div><div class="lbl">International</div></div>
+        <div class="stat reveal" data-d="3"><div class="num"><span data-count="0" id="sDom">0</span></div><div class="lbl">Domestic</div></div>
+        <div class="stat reveal" data-d="4"><div class="num"><span data-count="0" id="sTop">0</span></div><div class="lbl">TPAMI &amp; TOG papers</div></div>
       </div>
 
       <div class="tools reveal">
         <div class="row">
-          <div class="seg" id="kindSeg"><span class="thumb"></span><button class="on" data-k="">All</button><button data-k="j">Journal</button><button data-k="c">Conference</button></div>
+          <div class="seg" id="scopeSeg"><span class="thumb"></span><button class="on" data-s="">All</button><button data-s="intl">International</button><button data-s="dom">Domestic</button></div>
           <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search title, author, venue"></label>
         </div>
-        <div class="row">
-          <div class="chips" id="areaChips"></div>
-          <span class="count"><b id="count">0</b> papers</span>
-        </div>
+        <span class="count"><b id="count">0</b> papers</span>
       </div>
       <div id="pubs"></div>
     </div>
@@ -54,25 +44,22 @@
 <script src="assets/js/common.js"></script>
 <script>
 const PUBS = LAB.publications;
-const students = LAB.labNames.filter(n => n !== "Seunghwa Jeong").map(n => n.toLowerCase());
 $("#sAll").dataset.count = PUBS.length;
-$("#sJ").dataset.count = PUBS.filter(p => p.k === "j").length;
+$("#sIntl").dataset.count = PUBS.filter(p => p.scope === "intl").length;
+$("#sDom").dataset.count = PUBS.filter(p => p.scope === "dom").length;
 $("#sTop").dataset.count = PUBS.filter(p => /Pattern Analysis|Transactions on Graphics/.test(p.v)).length;
-$("#sStu").dataset.count = PUBS.filter(p => students.includes(p.a.split(",")[0].trim().toLowerCase())).length;
 
-const F = {k:"", area:null, q:""};
-seg($("#kindSeg"), b => { F.k = b.dataset.k; render(); });
-chips($("#areaChips"), LAB.areas.map(a => [a.id, a.name]), v => { F.area = v; render(); }, "All areas");
+const F = {scope:"", q:""};
+seg($("#scopeSeg"), b => { F.scope = b.dataset.s; render(); });
 $("#q").addEventListener("input", e => { F.q = e.target.value.trim(); render(); });
 
 function render(){
   const q = F.q.toLowerCase();
-  const list = PUBS.filter(p => (!F.k || p.k === F.k) && (!F.area || p.area === F.area) && (!q || (p.t+" "+p.a+" "+p.v).toLowerCase().includes(q)));
+  const list = PUBS.filter(p => (!F.scope || p.scope === F.scope) && (!q || (p.t+" "+p.a+" "+p.v).toLowerCase().includes(q)));
   $("#count").textContent = list.length;
   if (!list.length){ $("#pubs").innerHTML = `<div class="empty">No papers found. Try another keyword.</div>`; return; }
-  const years = [...new Set(list.map(p => p.y))];
   let i = 0;
-  $("#pubs").innerHTML = years.map(y => {
+  $("#pubs").innerHTML = [...new Set(list.map(p => p.y))].map(y => {
     const ps = list.filter(p => p.y === y);
     return `<div class="year-head">${y} <small>${ps.length}</small></div>` + ps.map(p => pubRow(p, F.q, i++)).join("");
   }).join("");
