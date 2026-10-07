@@ -11,6 +11,7 @@ window.LAB = {
     office: "Room 623, Daeyang AI Center",
     tel: "02-3408-3795",
     email: "seunghwajeong|sejong.ac.kr",
+    photo: "", // e.g. "assets/photos/members/seunghwa-jeong.jpg"
   },
 
   education: [
@@ -76,15 +77,16 @@ window.LAB = {
   labNames: ["Seunghwa Jeong","Junseo Choi","Hyeji Lee","Jaehwan Kim","Youngjun Choi","Sangjun Jeong","Heeseok Cho","Seohyun Yun"],
 
   /* r: position — "Ph.D. Student" | "Master Student" | "Undergraduate Researcher" (used for the Members filter).
+     photo: profile picture path, e.g. "assets/photos/members/junseo-choi.jpg" (square crop works best; initials show when empty)
      Optional detail fields (shown when a card is clicked): email ("id|domain"), bio, links: [{l:"GitHub", u:"https://..."}] */
   members: [
-    {n:"Junseo Choi",   r:"Master Student",           k:["3D Gaussian Splatting","Super-Resolution","Pose Estimation","XR"]},
-    {n:"HyeJi Lee",     r:"Master Student",           k:["3D Reconstruction","XR"]},
-    {n:"Jaehwan Kim",   r:"Undergraduate Researcher", k:["3D Reconstruction","Super-Resolution"]},
-    {n:"Youngjun Choi", r:"Undergraduate Researcher", k:["3D Reconstruction"]},
-    {n:"Sangjun Jeong", r:"Undergraduate Researcher", k:["Super-Resolution","Image Generation"]},
-    {n:"Heeseok Cho",   r:"Undergraduate Researcher", k:["3D Reconstruction","Image Processing"]},
-    {n:"Seohyun Yun",   r:"Undergraduate Researcher", k:["3D Reconstruction"]},
+    {n:"Junseo Choi",   r:"Master Student",           photo:"", k:["3D Gaussian Splatting","Super-Resolution","Pose Estimation","XR"]},
+    {n:"HyeJi Lee",     r:"Master Student",           photo:"", k:["3D Reconstruction","XR"]},
+    {n:"Jaehwan Kim",   r:"Undergraduate Researcher", photo:"", k:["3D Reconstruction","Super-Resolution"]},
+    {n:"Youngjun Choi", r:"Undergraduate Researcher", photo:"", k:["3D Reconstruction"]},
+    {n:"Sangjun Jeong", r:"Undergraduate Researcher", photo:"", k:["Super-Resolution","Image Generation"]},
+    {n:"Heeseok Cho",   r:"Undergraduate Researcher", photo:"", k:["3D Reconstruction","Image Processing"]},
+    {n:"Seohyun Yun",   r:"Undergraduate Researcher", photo:"", k:["3D Reconstruction"]},
   ],
 
   /* Gallery. cover: card background photo; photos: list of image paths shown when the album is opened.

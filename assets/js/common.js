@@ -7,6 +7,9 @@ const mailOf = s => s.split("|").join("@");
 const initials = n => n.replace(/,.*$/,"").split(/\s+/).map(w => w[0]).join("").slice(0,2).toUpperCase();
 const HUES = [["#2625cd","#3671ef"],["#3671ef","#70b7f7"],["#1b6fd8","#84ece6"],["#4c79d6","#e59cbf"],["#39507e","#70b7f7"],["#2625cd","#84ece6"],["#d16a9c","#70b7f7"]];
 const avatarBg = i => `linear-gradient(135deg,${HUES[i%HUES.length][0]},${HUES[i%HUES.length][1]})`;
+/* avatar contents: initials, covered by the profile photo when `photo` is set (initials show if the image fails) */
+const avatarInner = (name, photo) => esc(initials(name)) +
+  (photo ? `<img src="${esc(photo)}" alt="" loading="lazy" onerror="this.remove()">` : "");
 const COPY_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>`;
 
 const PAGES = [
@@ -143,7 +146,7 @@ function pubRow(p, q="", i=0){
 /* ---------- member card + tilt ---------- */
 function memberCard(m, i){
   return `<button class="member reveal" data-d="${i%4}" data-i="${i}" data-r="${esc(m.r)}" aria-label="${esc(m.n)} — details">
-    <div class="avatar" style="background:${avatarBg(i)}">${initials(m.n)}</div>
+    <div class="avatar" style="background:${avatarBg(i)}">${avatarInner(m.n, m.photo)}</div>
     <h4>${esc(m.n)}</h4><div class="role">${esc(m.r)}</div>
     <div class="tags">${m.k.map(k => `<span class="tag">${esc(k)}</span>`).join("")}</div>
   </button>`;

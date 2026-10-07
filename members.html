@@ -55,7 +55,7 @@
 <script src="assets/js/common.js"></script>
 <script>
 const d = LAB.director, M = LAB.members;
-$("#leadCard").innerHTML = `<div class="avatar">${initials(d.name)}</div><div><h2>${esc(d.name)}</h2><p>${esc(d.title)} · ${esc(d.dept)}</p></div><span class="more">Profile</span>`;
+$("#leadCard").innerHTML = `<div class="avatar">${avatarInner(d.name, d.photo)}</div><div><h2>${esc(d.name)}</h2><p>${esc(d.title)} · ${esc(d.dept)}</p></div><span class="more">Profile</span>`;
 
 /* position filter — fixed ranks first (shown even when empty), then any other position found in data.js */
 const RANKS = ["Ph.D. Student", "Master Student", "Undergraduate Researcher"];
@@ -77,7 +77,7 @@ const pubsOf = name => LAB.publications.filter(p => p.a.toLowerCase().split(/,\s
 function openMember(i){
   const m = M[i], pubs = pubsOf(m.n);
   const dlg = openDrawer(`
-    <div class="m-head"><div class="avatar" style="background:${avatarBg(i)}">${initials(m.n)}</div>
+    <div class="m-head"><div class="avatar" style="background:${avatarBg(i)}">${avatarInner(m.n, m.photo)}</div>
       <div><h3>${esc(m.n)}</h3><div class="role">${esc(m.r)}</div></div></div>
     ${m.bio ? `<p class="m-bio">${esc(m.bio)}</p>` : ""}
     <div><div class="d-sec">Research interests</div><div class="tags" style="margin-top:10px">${m.k.map(k => `<span class="tag">${esc(k)}</span>`).join("")}</div></div>

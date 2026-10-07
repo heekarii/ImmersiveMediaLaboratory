@@ -62,7 +62,7 @@
 <script>
 const d = LAB.director;
 $("#card").innerHTML = `
-  <div class="avatar">${initials(d.name)}</div>
+  <div class="avatar">${avatarInner(d.name, d.photo)}</div>
   <h2>${esc(d.name)}</h2>
   <div class="role">${esc(d.title)}<br>${esc(d.dept)}<br>Director, Immersive Media Lab</div>
   <dl>
