@@ -22,6 +22,7 @@ assets/logo*.svg     로고
 - 프로젝트: `s`/`e` 시작·종료 연도, `r`에 `"PI"`/`"Lead"`/`""`
 - 논문: `k`는 `"j"`/`"c"`, `scope`는 `"intl"`(국제)/`"dom"`(국내), `area`는 Research 페이지 분류
 - 멤버 프로필 사진: `assets/photos/members/`에 넣고 해당 멤버(또는 director)의 `photo`에 경로 입력. 비워두면 이니셜 표시
+- 원형 crop 영역: `photo-crop.html`을 열어 멤버·사진 선택 → 드래그/확대로 영역 지정 → 나온 한 줄을 `data.js`에 붙여넣기 (상세 화면은 원본 비율로 표시)
 - 멤버 상세: `bio`, `email`, `links` 선택 입력 (카드 클릭 시 표시)
 - 갤러리: 사진을 `assets/photos/`에 넣고 `cover`(대표), `photos`(앨범) 경로 입력
 

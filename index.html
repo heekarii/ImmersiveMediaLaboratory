@@ -209,8 +209,8 @@ $("#latest").innerHTML = LAB.publications.slice(0,3).map(p => `
   <a href="publications.html" class="mini reveal"><span class="yr">${p.y} · ${p.k==="j"?"Journal":"Conference"}</span><h4>${esc(p.t)}</h4></a>`).join("");
 
 /* member faces */
-$("#faces").innerHTML = [{n:LAB.director.name, photo:LAB.director.photo}, ...LAB.members].map((m,i) =>
-  `<a href="members.html" class="avatar" title="${esc(m.n)}" style="background:${avatarBg(i)}">${avatarInner(m.n, m.photo)}</a>`).join("");
+$("#faces").innerHTML = [{n:LAB.director.name, photo:LAB.director.photo, crop:LAB.director.crop}, ...LAB.members].map((m,i) =>
+  `<a href="members.html" class="avatar" title="${esc(m.n)}" style="background:${avatarBg(i)}">${avatarInner(m.n, m.photo, m.crop)}</a>`).join("");
 </script>
 </body>
 </html>

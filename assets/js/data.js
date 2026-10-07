@@ -12,6 +12,7 @@ window.LAB = {
     tel: "02-3408-3795",
     email: "seunghwajeong|sejong.ac.kr",
     photo: "", // e.g. "assets/photos/members/seunghwa-jeong.jpg"
+    crop: null, // circle crop for the avatar — generate with photo-crop.html
   },
 
   education: [
@@ -77,7 +78,8 @@ window.LAB = {
   labNames: ["Seunghwa Jeong","Junseo Choi","Hyeji Lee","Jaehwan Kim","Youngjun Choi","Sangjun Jeong","Heeseok Cho","Seohyun Yun"],
 
   /* r: position — "Ph.D. Student" | "Master Student" | "Undergraduate Researcher" (used for the Members filter).
-     photo: profile picture path, e.g. "assets/photos/members/junseo-choi.jpg" (square crop works best; initials show when empty)
+     photo: profile picture path, e.g. "assets/photos/members/junseo-choi.jpg" (any aspect ratio; initials show when empty)
+     crop:  optional circle crop for the avatar, e.g. {x:.5, y:.35, s:.6} — open photo-crop.html to pick it visually
      Optional detail fields (shown when a card is clicked): email ("id|domain"), bio, links: [{l:"GitHub", u:"https://..."}] */
   members: [
     {n:"Junseo Choi",   r:"Master Student",           photo:"", k:["3D Gaussian Splatting","Super-Resolution","Pose Estimation","XR"]},

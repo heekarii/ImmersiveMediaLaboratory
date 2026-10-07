@@ -12,6 +12,8 @@
 .dir{display:grid;grid-template-columns:360px 1fr;gap:32px;align-items:start}
 .dir-card{background:var(--bg-2);border-radius:var(--radius);padding:32px;position:sticky;top:96px}
 .dir-card .avatar{width:96px;height:96px;font-size:34px;background:linear-gradient(135deg,var(--blue-deep),var(--blue) 50%,var(--cyan))}
+.d-photo{margin:0}
+.d-photo img{width:100%;height:auto;max-height:60vh;object-fit:contain;border-radius:18px;background:#fff}
 .dir-card h2{font-size:26px;font-weight:800;margin-top:20px;letter-spacing:-.03em}
 .dir-card .role{color:var(--sub);font-weight:600;margin-top:4px}
 .dir-card dl{margin-top:24px;display:grid;gap:14px;font-size:15px}
@@ -62,7 +64,8 @@
 <script>
 const d = LAB.director;
 $("#card").innerHTML = `
-  <div class="avatar">${avatarInner(d.name, d.photo)}</div>
+  ${d.photo ? `<figure class="d-photo"><img src="${esc(d.photo)}" alt="${esc(d.name)}" onerror="const f=this.parentNode; f.nextElementSibling.hidden=false; f.remove()"></figure>` : ""}
+  <div class="avatar"${d.photo ? " hidden" : ""}>${initials(d.name)}</div>
   <h2>${esc(d.name)}</h2>
   <div class="role">${esc(d.title)}<br>${esc(d.dept)}<br>Director, Immersive Media Lab</div>
   <dl>

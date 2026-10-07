@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Photo Crop · IMM Lab</title>
+<link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+.crop{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:start;margin-top:40px}
+.stage-wrap{background:var(--bg-2);border-radius:28px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:20px}
+.stage{width:min(320px,72vw);aspect-ratio:1;border-radius:50%;background:var(--bg-3);cursor:grab;touch-action:none;user-select:none;box-shadow:0 0 0 6px #fff,0 20px 40px -20px rgba(0,27,55,.35);font-size:64px}
+.stage:active{cursor:grabbing}
+.stage.empty{cursor:default}
+.zoom{display:flex;align-items:center;gap:12px;width:100%;font-weight:700;color:var(--sub);font-size:14px}
+.zoom input{flex:1;accent-color:var(--blue)}
+.previews{display:flex;gap:16px;align-items:flex-end}
+.previews .avatar{background:var(--blue)}
+.previews small{display:block;text-align:center;color:var(--muted);font-size:12px;font-weight:600;margin-top:6px}
+.side{display:flex;flex-direction:column;gap:24px}
+.field label{display:block;font-size:14px;font-weight:700;color:var(--muted);margin-bottom:8px}
+.field select,.field input[type=text]{width:100%;height:48px;border-radius:14px;border:0;background:var(--bg-2);padding:0 14px;font:inherit;font-size:15px;color:var(--text);outline:none}
+.field select:focus,.field input[type=text]:focus{box-shadow:0 0 0 2px var(--blue);background:#fff}
+.drop{display:flex;align-items:center;justify-content:center;gap:10px;border:2px dashed var(--bg-3);border-radius:16px;padding:22px;color:var(--sub);font-weight:600;cursor:pointer;transition:border-color .2s,background .2s;text-align:center}
+.drop:hover,.drop.over{border-color:var(--blue);background:var(--blue-soft)}
+.drop input{display:none}
+pre{background:var(--ink);color:#e6edf7;border-radius:16px;padding:18px 20px;font-size:13px;line-height:1.6;overflow-x:auto;white-space:pre}
+.hint{color:var(--sub);font-size:14px;line-height:1.6}
+.hint code{background:var(--bg-2);padding:1px 6px;border-radius:6px;font-size:13px}
+@media (max-width:860px){ .crop{grid-template-columns:1fr} }
+</style>
+</head>
+<body data-page="tools">
+<main>
+  <section class="page-head"><div class="wrap"><h1>Photo Crop</h1></div></section>
+  <section style="padding-block:24px 120px">
+    <div class="wrap">
+      <p class="hint">Pick a member and a photo, then drag and zoom inside the circle. Copy the line below into <code>assets/js/data.js</code>. The photo stays on your computer — nothing is uploaded.</p>
+      <div class="crop">
+        <div class="stage-wrap">
+          <div class="avatar stage empty" id="stage"></div>
+          <label class="zoom">Zoom <input type="range" id="zoom" min="1" max="5" step="0.01" value="1"> <span id="zv">1.00×</span></label>
+          <div class="previews" id="previews"></div>
+          <button class="btn btn-ghost btn-sm" id="reset">Reset</button>
+        </div>
+
+        <div class="side">
+          <div class="field"><label for="who">Member</label><select id="who"></select></div>
+          <div class="field">
+            <label>Photo</label>
+            <label class="drop" id="drop"><input type="file" id="file" accept="image/*">Choose a photo or drop it here</label>
+          </div>
+          <div class="field"><label for="path">Path in the site (save the photo here)</label><input type="text" id="path" spellcheck="false"></div>
+          <div class="field">
+            <label>Paste into data.js</label>
+            <pre id="out"></pre>
+            <div class="btn-row" style="margin-top:12px"><button class="btn btn-primary btn-sm" id="copy">Copy line</button></div>
+          </div>
+          <p class="hint">Avatars use the circle crop. The profile detail view shows the full photo at its original aspect ratio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+const people = [{key:"director", n:LAB.director.name.replace(/,.*$/,""), photo:LAB.director.photo, crop:LAB.director.crop}, ...LAB.members.map((m,i) => ({key:"m"+i, ...m}))];
+$("#who").innerHTML = people.map((p,i) => `<option value="${i}">${esc(p.n)}${p.key==="director"?" (Director)":""}</option>`).join("");
+
+const stage = $("#stage");
+let person, src = "", nat = null, crop = {x:.5, y:.5, s:1};
+const slug = n => n.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const fmt = v => +v.toFixed(3);
+
+function draw(){
+  const sizes = [96, 64, 40];
+  const img = s => src ? `<img src="${esc(src)}" alt="" data-crop="${esc(JSON.stringify(crop))}" onload="fitCrop(this)">` : "";
+  stage.innerHTML = initials(person.n) + img();
+  stage.classList.toggle("empty", !src);
+  $("#previews").innerHTML = sizes.map(s => `<div><div class="avatar" style="width:${s}px;height:${s}px;font-size:${s/3}px">${initials(person.n)}${img()}</div><small>${s}px</small></div>`).join("");
+  update();
+}
+/* crop changed: re-fit the existing images and refresh the output (no re-render, so no flicker) */
+function update(){
+  $$(".crop .avatar img").forEach(im => { im.dataset.crop = JSON.stringify(crop); fitCrop(im); });
+  $("#zoom").value = 1 / crop.s; $("#zv").textContent = (1 / crop.s).toFixed(2) + "×";
+  const path = $("#path").value.trim();
+  const line = person.key === "director"
+    ? `photo: "${path}",\ncrop: {x:${fmt(crop.x)}, y:${fmt(crop.y)}, s:${fmt(crop.s)}},`
+    : `photo:"${path}", crop:{x:${fmt(crop.x)}, y:${fmt(crop.y)}, s:${fmt(crop.s)}},`;
+  $("#out").textContent = (person.key === "director" ? "// inside director: { ... }\n" : `// in the "${person.n}" entry of members\n`) + line;
+}
+/* keep the circle inside the image */
+function clampCrop(){
+  if (!nat) return;
+  crop.s = clamp(crop.s, .2, 1);
+  const side = Math.min(nat.w, nat.h) * crop.s;
+  crop.x = clamp(crop.x, side/2/nat.w, 1 - side/2/nat.w);
+  crop.y = clamp(crop.y, side/2/nat.h, 1 - side/2/nat.h);
+}
+function load(url, path){
+  src = url; $("#path").value = path;
+  const probe = new Image();
+  probe.onload = () => { nat = {w:probe.naturalWidth, h:probe.naturalHeight}; clampCrop(); draw(); };
+  probe.onerror = () => { src = ""; nat = null; draw(); toast("Couldn't load that photo"); };
+  probe.src = url;
+  draw();
+}
+function pick(i){
+  person = people[i];
+  crop = {x:.5, y:.5, s:1, ...(person.crop || {})};
+  if (person.photo) load(person.photo, person.photo);
+  else { src = ""; nat = null; $("#path").value = `assets/photos/members/${slug(person.n)}.jpg`; draw(); }
+}
+$("#who").addEventListener("change", e => pick(+e.target.value));
+
+function useFile(f){
+  if (!f || !f.type.startsWith("image/")) return;
+  crop = {x:.5, y:.5, s:1};
+  load(URL.createObjectURL(f), `assets/photos/members/${f.name}`);
+}
+$("#file").addEventListener("change", e => useFile(e.target.files[0]));
+const drop = $("#drop");
+drop.addEventListener("dragover", e => { e.preventDefault(); drop.classList.add("over"); });
+drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+drop.addEventListener("drop", e => { e.preventDefault(); drop.classList.remove("over"); useFile(e.dataTransfer.files[0]); });
+$("#path").addEventListener("input", update);
+
+/* drag to pan */
+let drag = null;
+stage.addEventListener("pointerdown", e => { if (!nat) return; drag = {x:e.clientX, y:e.clientY, cx:crop.x, cy:crop.y}; stage.setPointerCapture(e.pointerId); });
+stage.addEventListener("pointermove", e => {
+  if (!drag) return;
+  const side = Math.min(nat.w, nat.h) * crop.s, S = stage.clientWidth;
+  crop.x = drag.cx - (e.clientX - drag.x) / S * side / nat.w;
+  crop.y = drag.cy - (e.clientY - drag.y) / S * side / nat.h;
+  clampCrop(); update();
+});
+stage.addEventListener("pointerup", () => drag = null);
+/* zoom */
+const setZoom = z => { crop.s = 1 / clamp(z, 1, 5); clampCrop(); update(); };
+$("#zoom").addEventListener("input", e => setZoom(+e.target.value));
+stage.addEventListener("wheel", e => { if (!nat) return; e.preventDefault(); setZoom(1 / crop.s * (e.deltaY < 0 ? 1.06 : 1/1.06)); }, {passive:false});
+$("#reset").onclick = () => { crop = {x:.5, y:.5, s:1}; clampCrop(); update(); };
+$("#copy").onclick = async () => { const t = $("#out").textContent.split("\n").slice(1).join("\n"); toast(await copyText(t) ? "Copied — paste it into data.js" : "Copy failed"); };
+
+pick(0);
+</script>
+</body>
+</html>
