@@ -101,6 +101,14 @@ window.LAB = {
     {k:"Conference", t:"KCGS 2025",      d:"Jul 8 – 11, 2025",      p:"Goseong, Korea",     g:["#0f766e","#2bb3a6","#84ece6"], cover:"", photos:[]},
   ],
 
+  /* Blog. Each post is a Markdown file at posts/<id>.md; list it here to publish it (newest first).
+     cat: "Lab Life" | "Research".  author: a name from director/members (shows their avatar) or any text.
+     cover: optional image path.  draft: true hides the post from the list (preview it at blog.html?drafts). */
+  blog: [
+    {id:"how-to-write-a-post", t:"How to write a blog post", d:"2026-10-28", cat:"Lab Life", author:"IMM Lab",
+     excerpt:"A quick guide to publishing posts on the lab blog with Markdown.", tags:["Guide"], cover:"", draft:true},
+  ],
+
   areas: [
     {id:"gen",    no:"01", name:"Immersive View Generation",             items:["6-DoF Scene Generation: NeRF & 3DGS","High-quality View Reconstruction using Super-Resolution"]},
     {id:"stream", no:"02", name:"Efficient Large-scale Video Streaming", items:["Adaptive Streaming and Video Optimization using AI","Video Compression and Transmission based on CNNs"]},

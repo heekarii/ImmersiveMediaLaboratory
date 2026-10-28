@@ -30,6 +30,7 @@ const PAGES = [
   ["publications", "Publications", "publications.html"],
   ["members",      "Members",      "members.html"],
   ["gallery",      "Gallery",      "gallery.html"],
+  ["blog",         "Blog",         "blog.html"],
 ];
 
 /* ---------- chrome ---------- */

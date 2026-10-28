@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blog · IMM Lab</title>
+<meta name="description" content="Lab life and research stories from the Immersive Media Lab, Sejong University.">
+<link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+.tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.feature{display:grid;grid-template-columns:1.2fr 1fr;gap:0;border-radius:32px;overflow:hidden;background:var(--bg-2);margin-top:32px;transition:transform .35s var(--ease),box-shadow .35s}
+.feature:hover{transform:translateY(-6px);box-shadow:0 30px 60px -30px rgba(0,27,55,.3)}
+.feature .cover{min-height:360px}
+.feature .body{padding:40px;display:flex;flex-direction:column;gap:14px;justify-content:center}
+.feature h2{font-size:clamp(26px,3vw,36px);font-weight:800;letter-spacing:-.035em;line-height:1.25}
+.feature p{color:var(--sub);font-size:17px}
+.posts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.post{display:flex;flex-direction:column;border-radius:28px;overflow:hidden;background:var(--bg-2);transition:transform .3s var(--ease),box-shadow .3s}
+.post:hover{transform:translateY(-6px);box-shadow:0 24px 48px -24px rgba(0,27,55,.28)}
+.post .cover{aspect-ratio:16/10}
+.post .body{padding:24px;display:flex;flex-direction:column;gap:10px;flex:1}
+.post h3{font-size:20px;font-weight:800;letter-spacing:-.025em;line-height:1.35}
+.post p{color:var(--sub);font-size:15px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.post .byline{margin-top:auto;padding-top:8px}
+.cover{position:relative;overflow:hidden;display:grid;place-items:center}
+.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}
+.feature:hover .cover img,.post:hover .cover img{transform:scale(1.05)}
+.cover .mark{width:72px;opacity:.9;filter:brightness(0) invert(1);transition:transform .6s var(--ease)}
+.feature:hover .cover .mark,.post:hover .cover .mark{transform:scale(1.12) rotate(-4deg)}
+.draft{position:absolute;top:16px;left:16px;z-index:1;background:#191f28;color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:8px}
+.tagline{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tagline .t{font-size:13px;color:var(--muted);font-weight:600}
+@media (max-width:1020px){ .posts{grid-template-columns:repeat(2,1fr)} .feature{grid-template-columns:1fr} .feature .cover{min-height:240px} }
+@media (max-width:600px){ .posts{grid-template-columns:1fr} .feature .body{padding:28px} }
+</style>
+</head>
+<body data-page="blog">
+<main>
+  <section class="page-head"><div class="wrap"><h1>Blog</h1></div></section>
+
+  <section style="padding-block:40px 120px">
+    <div class="wrap">
+      <div class="tools reveal">
+        <div class="seg" id="catSeg"><span class="thumb"></span><button class="on" data-c="">All</button><button data-c="Lab Life">Lab Life</button><button data-c="Research">Research</button></div>
+        <span class="count"><b id="count">0</b> posts</span>
+      </div>
+      <div id="list"></div>
+    </div>
+  </section>
+
+  <section data-cta style="padding-top:0"></section>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/blog.js"></script>
+<script>
+const href = p => `post.html?id=${encodeURIComponent(p.id)}${SHOW_DRAFTS ? "&drafts" : ""}`;
+const cover = p => `<div class="cover" style="background:${catStyle(p.cat).bg}">
+  ${p.draft ? '<span class="draft">Draft</span>' : ""}
+  ${p.cover ? `<img src="${esc(p.cover)}" alt="" loading="lazy" onerror="this.remove()">` : `<img class="mark" src="assets/logo-mark.svg" alt="" style="position:static;width:72px;height:auto">`}
+</div>`;
+const tagline = p => `<div class="tagline">${catBadge(p.cat)}${(p.tags||[]).map(t => `<span class="t">#${esc(t)}</span>`).join("")}</div>`;
+
+function render(cat){
+  const list = POSTS.filter(p => !cat || p.cat === cat);
+  $("#count").textContent = list.length;
+  if (!list.length){ $("#list").innerHTML = `<div class="empty">No posts yet — stay tuned.</div>`; return; }
+  const [first, ...rest] = list;
+  $("#list").innerHTML = `
+    <a class="feature" href="${href(first)}" style="animation:fade .6s var(--ease) both">
+      ${cover(first)}
+      <div class="body">${tagline(first)}<h2>${esc(first.t)}</h2>${first.excerpt ? `<p>${esc(first.excerpt)}</p>` : ""}${byline(first, 40)}</div>
+    </a>
+    ${rest.length ? `<div class="posts">${rest.map((p,i) => `
+      <a class="post" href="${href(p)}" style="animation:fade .6s ${Math.min(i,8)*60}ms var(--ease) both">
+        ${cover(p)}
+        <div class="body">${tagline(p)}<h3>${esc(p.t)}</h3>${p.excerpt ? `<p>${esc(p.excerpt)}</p>` : ""}${byline(p, 32)}</div>
+      </a>`).join("")}</div>` : ""}`;
+}
+seg($("#catSeg"), b => render(b.dataset.c));
+render("");
+</script>
+</body>
+</html>
